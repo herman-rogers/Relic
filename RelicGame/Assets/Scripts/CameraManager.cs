@@ -4,6 +4,7 @@ using TouchScript;
 using TouchScript.Events;
 
 public class CameraManager : MonoBehaviour {
+
 	public GameObject monster;
 	public Vector2    firstTouchPosition;
 	public Vector2    secondTouchPosition;
@@ -12,20 +13,20 @@ public class CameraManager : MonoBehaviour {
 	bool              isMoving = false;
 	public static Vector3 cameraPos;
 
-	void Start( ){
+	void Start( ) {
 //		TouchManager.Instance.TouchesBegan += OnTouchBegin;
 //		TouchManager.Instance.TouchesMoved += OnTouchContinue;
 //		TouchManager.Instance.TouchesEnded += OnTouchEnd;
 	}
 
-	public void OnTouchBegin( object sender, TouchEventArgs e ){
-		foreach( TouchPoint point in e.TouchPoints ){
+	public void OnTouchBegin( object sender, TouchEventArgs e ) {
+		foreach( TouchPoint point in e.TouchPoints ) {
 			firstTouchPosition = new Vector2( point.Position.x, point.Position.y );
 		}
 	}
 
-	public void OnTouchContinue( object sender, TouchEventArgs e ){
-		foreach( var point in e.TouchPoints ){
+	public void OnTouchContinue( object sender, TouchEventArgs e ) {
+		foreach( var point in e.TouchPoints ) {
 			secondTouchPosition  = new Vector2( point.Position.x, point.Position.y );
 			currentTouchMovement = new Vector2( ( secondTouchPosition.x - firstTouchPosition.x ),
 			                                    ( secondTouchPosition.y - firstTouchPosition.y ));
@@ -33,35 +34,30 @@ public class CameraManager : MonoBehaviour {
 		}
     }
 
-    public void OnTouchEnd( object sender, TouchEventArgs e ){
+    public void OnTouchEnd( object sender, TouchEventArgs e ) {
 		hasTouchEnded = true;
     }
 
-    public void Update()
-	{
-		if(!isMoving && (this.camera.WorldToScreenPoint(monster.transform.position)).x < 250.0f || 
-		   !isMoving && (((float)Screen.width) - this.camera.WorldToScreenPoint(monster.transform.position).x) < 250.0f)
-		{
+    public void Update( ) {
+		if( !isMoving && ( this.camera.WorldToScreenPoint( monster.transform.position ) ).x < 250.0f || 
+		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) < 250.0f ) {
 			isMoving = true;
-			LerpCamera();
+			LerpCamera( );
 		}
-		else if(isMoving)
-		{
-			LerpCamera();
-			if((this.camera.WorldToScreenPoint(monster.transform.position)).x > 300.0f && 
-			   (((float)Screen.width) - this.camera.WorldToScreenPoint(monster.transform.position).x) > 300.0f)
-			{
+		else if( isMoving ) {
+			LerpCamera( );
+			if( ( this.camera.WorldToScreenPoint(monster.transform.position ) ).x > 300.0f && 
+			   ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) > 300.0f ) {
 				isMoving = false;
 			}
 		}
 	}
 
-	void LerpCamera()
-	{
+	void LerpCamera( ) {
 		Vector3 monsterX = monster.transform.position;
 		monsterX.y = this.transform.position.y;
 		monsterX.z = this.transform.position.z;
-		this.transform.position = Vector3.Lerp(this.transform.position, monsterX, 0.5f * Time.deltaTime);
+		this.transform.position = Vector3.Lerp( this.transform.position, monsterX, 0.5f * Time.deltaTime );
 		cameraPos = this.transform.position;
 	}
 }

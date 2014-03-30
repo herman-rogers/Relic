@@ -34,7 +34,7 @@ public class MonsterAnimations : MonoBehaviour {
 			ChangeMonsterLookDirection( );
 		    if( toggleAnimation ){
 			    toggleAnimation = false;
-		        monster.GetComponent< SkeletonAnimation >( ).animationName = "Walking"; 
+		        monster.GetComponent< SkeletonAnimation >( ).animationName = "Walking";
 		        StartCoroutine( MoveMonster( ) );
 			}
 		}
