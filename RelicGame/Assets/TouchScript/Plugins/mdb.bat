@@ -1,1 +1,0 @@
-"C:\Program Files (x86)\Unity 4\Editor\Data\Mono\lib\mono\2.0\pdb2mdb.exe" OSCsharp.dll
