@@ -3,59 +3,87 @@ skeleton-1.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-arm
-  rotate: true
-  xy: 469, 384
-  size: 104, 345
-  orig: 104, 345
-  offset: 0, 0
-  index: -1
-arm 2
-  rotate: true
-  xy: 469, 384
-  size: 104, 345
-  orig: 104, 345
-  offset: 0, 0
-  index: -1
 body
   rotate: false
-  xy: 2, 14
+  xy: 2, 2
   size: 216, 474
   orig: 216, 474
   offset: 0, 0
   index: -1
+hand
+  rotate: true
+  xy: 220, 16
+  size: 69, 84
+  orig: 69, 84
+  offset: 0, 0
+  index: -1
+hand2
+  rotate: true
+  xy: 220, 16
+  size: 69, 84
+  orig: 69, 84
+  offset: 0, 0
+  index: -1
 head
   rotate: false
-  xy: 220, 265
+  xy: 220, 253
   size: 247, 223
   orig: 247, 223
   offset: 0, 0
   index: -1
+lower-arm
+  rotate: true
+  xy: 732, 431
+  size: 45, 134
+  orig: 45, 134
+  offset: 0, 0
+  index: -1
+lower-arm-2
+  rotate: true
+  xy: 732, 431
+  size: 45, 134
+  orig: 45, 134
+  offset: 0, 0
+  index: -1
 shin
   rotate: true
-  xy: 469, 303
+  xy: 469, 266
   size: 79, 176
   orig: 79, 176
   offset: 0, 0
   index: -1
 shin 2
   rotate: true
-  xy: 469, 303
+  xy: 469, 266
   size: 79, 176
   orig: 79, 176
   offset: 0, 0
   index: -1
 thigh
-  rotate: false
-  xy: 220, 2
+  rotate: true
+  xy: 469, 347
   size: 129, 261
   orig: 129, 261
   offset: 0, 0
   index: -1
 thigh 2
-  rotate: false
-  xy: 220, 2
+  rotate: true
+  xy: 469, 347
   size: 129, 261
   orig: 129, 261
+  offset: 0, 0
+  index: -1
+upper-arm
+  rotate: false
+  xy: 220, 87
+  size: 104, 164
+  orig: 104, 164
+  offset: 0, 0
+  index: -1
+upper-arm 2
+  rotate: false
+  xy: 220, 87
+  size: 104, 164
+  orig: 104, 164
   offset: 0, 0
   index: -1
