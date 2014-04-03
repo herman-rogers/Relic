@@ -43,7 +43,7 @@ public class DoorTween : SpriteTween {
 
 	bool DoorCanOpen( ) {
 		return (
-			computer.frequency.Evaluate( Time.timeSinceLevelLoad ) > 0.9f
+			computer.frequency.Evaluate( Time.timeSinceLevelLoad / computer.rateOfFlicker ) > 0.9f
 			&& Mathf.Abs( this.transform.position.x - player.position.x ) < 2.2f//TODO: Build this as a visual component in the editor.
 			);
 	}

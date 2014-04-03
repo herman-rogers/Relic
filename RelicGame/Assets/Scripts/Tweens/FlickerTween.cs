@@ -12,7 +12,6 @@ public class FlickerTween : SpriteTween {
 
 
 	public void Update( ) {
-//		from.color = new Color( 1.0f, 1.0f, 1.0f, 1.0f - frequency.Evaluate( Time.timeSinceLevelLoad ) );
 		flickerSprite.color = new Color( 1.0f, 1.0f, 1.0f, Flicker( ) );
 	}
 
