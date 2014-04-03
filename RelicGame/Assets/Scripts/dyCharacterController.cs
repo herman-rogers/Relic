@@ -14,7 +14,7 @@ public class dyCharacterController : MonoBehaviour {
 	const float playerBodyWidth = 0.7f;
 	const float stopWithinRange = 0.01f;
 	const float monsterMoveSpeedMax = 3.0f;
-	const float monsterMoveSpeedMin = 1.0f;
+	const float monsterMoveSpeedMin = 2.0f;
 
 	public enum AnimationList {
 		Walking,
@@ -23,7 +23,7 @@ public class dyCharacterController : MonoBehaviour {
 		Activate,
 	}
 
-	void Awake( ){
+	void Awake( ) {
 		monster = this.transform.parent.gameObject;
 		spineAnimation = monster.GetComponent< SkeletonAnimation >( );
 		pressGesture = this.GetComponent< dyCharacterPressGesture >( );
@@ -106,7 +106,7 @@ public class dyCharacterController : MonoBehaviour {
 
 	void ChangeDirectionFacing( ){
 		int facingDirection = Mathf.FloorToInt( monster.transform.localRotation.y );
-		if ( monster.transform.position.x < monsterPosition.x && facingDirection == 0 ){
+		if ( monster.transform.position.x < monsterPosition.x && facingDirection == 0 ) {
 			monster.transform.rotation = new Quaternion( 0,180,0,0 );
 		}
 		else if ( monster.transform.position.x > monsterPosition.x && facingDirection == 1  ) {
