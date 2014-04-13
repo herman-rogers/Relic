@@ -2,10 +2,10 @@
 using System.Collections;
 using Spine;
 
-[RequireComponent( typeof( dyCharacterPressGesture ) )]
-public class dyCharacterController : MonoBehaviour {
+[RequireComponent( typeof( CharacterPressGesture ) )]
+public class CharacterController : MonoBehaviour {
 	public AnimationList runningAnimation{ get; private set; }
-	dyCharacterPressGesture pressGesture;
+	CharacterPressGesture pressGesture;
 	SkeletonAnimation spineAnimation;
 	GameObject monster;
 	Vector3 monsterPosition;
@@ -26,7 +26,7 @@ public class dyCharacterController : MonoBehaviour {
 	void Awake( ){
 		monster = this.transform.parent.gameObject;
 		spineAnimation = monster.GetComponent< SkeletonAnimation >( );
-		pressGesture = this.GetComponent< dyCharacterPressGesture >( );
+		pressGesture = this.GetComponent< CharacterPressGesture >( );
 	}
 
 	void Start( ){

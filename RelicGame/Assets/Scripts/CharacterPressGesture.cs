@@ -3,7 +3,7 @@ using System.Collections;
 using TouchScript;
 using TouchScript.Gestures;
 
-public class dyCharacterPressGesture : MonoBehaviour {
+public class CharacterPressGesture : MonoBehaviour {
 	private CharacterController moveMonster;
 	private PressGesture pressGesture;
 
