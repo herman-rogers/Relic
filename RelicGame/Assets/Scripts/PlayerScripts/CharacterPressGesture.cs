@@ -17,7 +17,7 @@ public class CharacterPressGesture : MonoBehaviour {
 		switch( e.State ){
 		case Gesture.GestureState.Recognized:
 			moveMonster.MoveMonsterOnXAxis( pressGesture.ScreenPosition.x, 
-			                                CharacterController.AnimationList.Walking, true );
+			                                CharacterAnimations.AnimationList.Walking, true );
 			break;
 		}
 	}

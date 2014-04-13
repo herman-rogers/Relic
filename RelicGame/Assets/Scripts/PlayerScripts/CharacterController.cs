@@ -2,91 +2,36 @@
 using System.Collections;
 using Spine;
 
-[RequireComponent( typeof( CharacterPressGesture ) )]
 public class CharacterController : MonoBehaviour {
-	public AnimationList runningAnimation{ get; private set; }
-	CharacterPressGesture pressGesture;
-	SkeletonAnimation spineAnimation;
+	CharacterAnimations characterAnimations;
 	GameObject monster;
 	Vector3 monsterPosition;
 	float travelDistance;
 	float runSpeed;
 	const float playerBodyWidth = 0.7f;
 	const float stopWithinRange = 0.01f;
-	const float monsterMoveSpeedMax = 3.0f;
-	const float monsterMoveSpeedMin = 2.0f;
-
-	public enum AnimationList {
-		Walking,
-		Idle,
-		Running,
-		Activate,
-	}
+	const float monsterMoveSpeedMax = 1.0f;
+	const float monsterMoveSpeedMin = 1.5f;
 
 	void Awake( ) {
 		monster = this.transform.parent.gameObject;
-		spineAnimation = monster.GetComponent< SkeletonAnimation >( );
-		pressGesture = this.GetComponent< CharacterPressGesture >( );
-	}
-
-	void Start( ){
-		runningAnimation = AnimationList.Idle;
-		spineAnimation.state.Complete += AnimationComplete;
+		characterAnimations = new CharacterAnimations( );
+		characterAnimations.InitAnimations( this.gameObject );
 	}
 
 	public void MoveMonsterOnXAxis( float xPosition ){
-//		DisableUserInput( );
-		MoveMonsterOnXAxis( xPosition, AnimationList.Walking, false );
+		MoveMonsterOnXAxis( xPosition, CharacterAnimations.AnimationList.Walking , false );
 	}
 
-	public void MoveMonsterOnXAxis( float xPosition, AnimationList animation ){
-//		DisableUserInput( );
+	public void MoveMonsterOnXAxis( float xPosition, CharacterAnimations.AnimationList animation ){
 		MoveMonsterOnXAxis( xPosition, animation, false );
 	}
 
-	public void MoveMonsterOnXAxis( float xPosition, AnimationList animation, bool isCameraPosition ){
+	public void MoveMonsterOnXAxis( float xPosition, CharacterAnimations.AnimationList animation, bool isCameraPosition ){
 		GetNewMonsterPosition( xPosition, isCameraPosition );
 		FindTravelDistance( );
 		ChangeDirectionFacing( );
 		StartMovementAnimation( animation );
-	}
-
-	public void BlendNewMovement( float xPosition, AnimationList animation ){
-		StartCoroutine( BlendMonsterMovement( xPosition, animation ) );
-	}
-
-	public void PlayNewAnimation( AnimationList animation ){
-		PlayNewAnimation( animation, false );
-	}
-
-	public void PlayNewAnimation( AnimationList animation, bool isLooped ){
-		spineAnimation.state.AddAnimation( 1, animation.ToString( ), isLooped, 0.5f );
-		runningAnimation = animation;
-	}
-
-	public void DisableUserInput( ){
-		pressGesture.enabled = false;
-	}
-	
-	public void EnableUserInput( ){
-		pressGesture.enabled = true;
-	}
-
-	void AnimationComplete( Spine.AnimationState animationState, int trackIndex, int loopCount ){
-		switch( animationState.ToString( ) ){
-		case "Idle" :
-			runningAnimation = AnimationList.Idle;
-			break;
-		case "Walking":
-			runningAnimation = AnimationList.Idle;
-			break;
-		case "Running":
-			runningAnimation = AnimationList.Running;
-			break;
-		case "Activte":
-			runningAnimation = AnimationList.Activate;
-			break;
-		}
 	}
 
 	void GetNewMonsterPosition( float newDestination, bool isCameraPosition ){
@@ -114,19 +59,19 @@ public class CharacterController : MonoBehaviour {
 		}
 	}
 
-	void StartMovementAnimation( AnimationList monsterAnimation ){
-		if ( travelDistance > playerBodyWidth && monsterAnimation != runningAnimation ){
-			PlayNewAnimation( monsterAnimation, true );
+	void StartMovementAnimation( CharacterAnimations.AnimationList monsterAnimation ){
+		if ( travelDistance > playerBodyWidth && monsterAnimation != characterAnimations.runningAnimation ){
+			characterAnimations.PlayNewAnimation( monsterAnimation, true );
 			SetMonsterMovementSpeed( monsterAnimation );
 			StartCoroutine( "DisplayMonsterMovement" );
 		}
 	}
 
-	void SetMonsterMovementSpeed( AnimationList monsterAnimation ){
-		if( monsterAnimation == AnimationList.Walking ){
+	void SetMonsterMovementSpeed( CharacterAnimations.AnimationList monsterAnimation ){
+		if( monsterAnimation == CharacterAnimations.AnimationList.Walking ){
 			runSpeed = monsterMoveSpeedMin;
 		}
-		else if( monsterAnimation == AnimationList.Running ){
+		else if( monsterAnimation == CharacterAnimations.AnimationList.Running ){
 			runSpeed = monsterMoveSpeedMax;
 		}
 	}
@@ -144,10 +89,10 @@ public class CharacterController : MonoBehaviour {
 		}
 	}
 
-	IEnumerator BlendMonsterMovement( float xPosition, AnimationList animation ){
+	IEnumerator BlendMonsterMovement( float xPosition, CharacterAnimations.AnimationList animation ){
 		bool startAnimation = false;
 		while( !startAnimation ){
-			if( runningAnimation != AnimationList.Idle ){
+			if( characterAnimations.runningAnimation != CharacterAnimations.AnimationList.Idle ){
 				continue;
 			}
 			yield return new WaitForSeconds( 1.0f );
@@ -157,7 +102,7 @@ public class CharacterController : MonoBehaviour {
 	}
 
 	void StopMovement( ){
-		PlayNewAnimation( AnimationList.Idle );
+		characterAnimations.PlayNewAnimation( CharacterAnimations.AnimationList.Idle );
 		StopCoroutine( "DisplayMonsterMovement" );
 	}
 }
