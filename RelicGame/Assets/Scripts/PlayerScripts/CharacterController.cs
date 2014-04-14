@@ -27,36 +27,49 @@ public class CharacterController : MonoBehaviour {
 		MoveMonsterOnXAxis( xPosition, animation, false );
 	}
 
-	public void MoveMonsterOnXAxis( float xPosition, CharacterAnimations.AnimationList animation, bool isCameraPosition ){
-		GetNewMonsterPosition( xPosition, isCameraPosition );
+	public void MoveMonsterOnXAxis( float touchPositionX, CharacterAnimations.AnimationList animation, bool isCameraPosition ){
+		Vector3 newMonsterPositionX = new Vector3( 0,0,0 );
+		if( isCameraPosition ){
+			newMonsterPositionX = Camera.main.ScreenToWorldPoint(
+				new Vector3( touchPositionX, 0.0f, 0.0f ) );
+		} else {
+			newMonsterPositionX = new Vector3( touchPositionX, 0.0f, 0.0f );
+		}
+		if( shouldChangeDirectionFacing( newMonsterPositionX.x ) ) {
+			ChangeDirectionFacing( );
+		}
+		GetNewMonsterPosition( newMonsterPositionX );
 		FindTravelDistance( );
-		ChangeDirectionFacing( );
 		StartMovementAnimation( animation );
 	}
 
-	void GetNewMonsterPosition( float newDestination, bool isCameraPosition ){
-		Vector3 newMonsterPosition = new Vector3( 0,0,0 );
-		if( isCameraPosition ){
-		    newMonsterPosition = Camera.main.ScreenToWorldPoint(
-			new Vector3( newDestination, 0.0f, 0.0f ) );
-		} else {
-			newMonsterPosition = new Vector3( newDestination, 0.0f, 0.0f );
-		}
-		monsterPosition = new Vector3(  newMonsterPosition.x, monster.transform.position.y, monster.transform.position.z );
+	void GetNewMonsterPosition( Vector3 newDestination ){
+		monsterPosition = new Vector3(  newDestination.x, monster.transform.position.y, monster.transform.position.z );
 	}
 
 	void FindTravelDistance( ){
 		travelDistance = Vector3.Distance( monster.transform.position, monsterPosition );
 	}
 
+	bool shouldChangeDirectionFacing( float positionMovingTowards ) {
+		return ( monster.transform.localScale.x > 0.0f &&
+		    monster.transform.position.x < positionMovingTowards ) ||
+			( monster.transform.localScale.x < 0.0f &&
+			 monster.transform.position.x > positionMovingTowards );
+	}
+
 	void ChangeDirectionFacing( ){
-		int facingDirection = Mathf.FloorToInt( monster.transform.localRotation.y );
-		if ( monster.transform.position.x < monsterPosition.x && facingDirection == 0 ) {
-			monster.transform.rotation = new Quaternion( 0,180,0,0 );
-		}
-		else if ( monster.transform.position.x > monsterPosition.x && facingDirection == 1  ) {
-			monster.transform.rotation = new Quaternion( 0,0,0,0 );
-		}
+//		int facingDirection = Mathf.FloorToInt( monster.transform.localRotation.y );
+//		if ( monster.transform.position.x < monsterPosition.x && facingDirection == 0 ) {
+//			monster.transform.rotation = new Quaternion( 0,180,0,0 );
+//		}
+//		else if ( monster.transform.position.x > monsterPosition.x && facingDirection == 1  ) {
+//			monster.transform.rotation = new Quaternion( 0,0,0,0 );
+//		}
+
+		Vector3 changedDirection = monster.transform.localScale;
+		changedDirection.x = -changedDirection.x;
+		monster.transform.localScale = changedDirection;
 	}
 
 	void StartMovementAnimation( CharacterAnimations.AnimationList monsterAnimation ){
