@@ -3,20 +3,19 @@ using System.Collections;
 using TouchScript;
 using TouchScript.Gestures;
 
-public class CharacterPressGesture : MonoBehaviour {
+public class CharacterPressGesture : PressGesture {
 	private CharacterController moveMonster;
-	private PressGesture pressGesture;
 
 	void Start( ){
-		pressGesture = this.GetComponent< PressGesture >( );
+		base.Start( );
 		moveMonster = this.GetComponent< CharacterController >( );
-		if( pressGesture != null ) pressGesture.StateChanged += StateChangeHandler;
+		StateChanged += StateChangeHandler;
 	}
 
 	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ){
 		switch( e.State ){
 		case Gesture.GestureState.Recognized:
-			moveMonster.MoveMonsterOnXAxis( pressGesture.ScreenPosition.x, 
+			moveMonster.MoveMonsterOnXAxis( ScreenPosition.x, 
 			                                CharacterAnimations.AnimationList.Walking, true );
 			break;
 		}
