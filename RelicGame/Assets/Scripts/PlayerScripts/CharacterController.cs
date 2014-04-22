@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Spine;
+using TouchScript;
+using TouchScript.Gestures;
 
-public class CharacterController : MonoBehaviour {
-	CharacterAnimations characterAnimations;
+public class CharacterController : PressGesture {
+	CharacterAnimations characterAnimations; 
 	GameObject monster;
 	Vector3 monsterPosition;
 	float travelDistance;
@@ -14,9 +16,11 @@ public class CharacterController : MonoBehaviour {
 	const float monsterMoveSpeedMin = 1.5f;
 
 	void Awake( ) {
+		base.Start( );
 		monster = this.transform.parent.gameObject;
 		characterAnimations = new CharacterAnimations( );
 		characterAnimations.InitAnimations( this.gameObject );
+		this.StateChanged += StateChangeHandler;
 	}
 
 	public void MoveMonsterOnXAxis( float xPosition ){
@@ -56,6 +60,15 @@ public class CharacterController : MonoBehaviour {
 		    monster.transform.position.x < positionMovingTowards ) ||
 			( monster.transform.localScale.x < 0.0f &&
 			 monster.transform.position.x > positionMovingTowards );
+	}
+	
+	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ){
+		switch( e.State ){
+		case Gesture.GestureState.Recognized:
+			this.MoveMonsterOnXAxis( ScreenPosition.x, 
+			                        CharacterAnimations.AnimationList.Walking, true );
+			break;
+		}
 	}
 
 	void ChangeDirectionFacing( ){
