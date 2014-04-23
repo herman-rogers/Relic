@@ -7,44 +7,50 @@ public class CameraManager : MonoBehaviour {
 
 	public GameObject monster;
 	[ Range( 0.1f, 5.0f ) ]
-	public float cameraMoveSpeed = 0.5f;
+	public float cameraMoveSpeedHorizontally = 0.5f;
+	[ Range( 0.1f, 5.0f ) ]
+	public float cameraMoveSpeedVertically = 0.5f;
 	bool isMoving = false;
 	public static Vector3 cameraPos;
 
 	public Transform topLeftAnchor;
 	public Transform botRightAnchor;
-	bool shouldCheck;
+	bool shouldCheckForAnchors;
 	float cameraHalfWidth;
 
 	private void Awake( ) {
-		shouldCheck = (topLeftAnchor != null && botRightAnchor != null);
+		shouldCheckForAnchors = HasAnchors( );
 		cameraHalfWidth = ( camera.orthographicSize * camera.aspect );
+	}
+
+	bool HasAnchors( ) {
+		return (topLeftAnchor != null && botRightAnchor != null);
 	}
 
 	public void Update( ) {
 		if( !isMoving && ( this.camera.WorldToScreenPoint( monster.transform.position ) ).x < 250.0f || 
 		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) < 250.0f ) {
 			isMoving = true;
-			LerpCamera( );
 		}
 		else if( isMoving ) {
-			LerpCamera( );
 			isMoving = !( ( this.camera.WorldToScreenPoint(monster.transform.position ) ).x > 300.0f && 
 			             ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) > 300.0f );
 		}
+		LerpCamera( );
 	}
 
 	void LerpCamera( ) {
-		Vector3 monsterX = monster.transform.position;
-		if( shouldCheck ) {
-			bool canMove = ( monsterX.x > this.transform.position.x ) ? CanMoveRight( ) : CanMoveLeft( );
-			if( !canMove ) {
-				return;
-			}
+		Vector3 monsterPosition = monster.transform.position;
+		if( shouldCheckForAnchors ) {
+			bool canMoveHorizontally = ( monsterPosition.x > this.transform.position.x ) ? CanMoveRight( ) : CanMoveLeft( );
+			bool canMoveVertically = ( monsterPosition.y > this.transform.position.y ) ? CanMoveUp( ) : CanMoveDown( );
+			monsterPosition.x = ( canMoveHorizontally ) ? monsterPosition.x : this.transform.position.x;
+			monsterPosition.y = ( canMoveVertically ) ? monsterPosition.y : this.transform.position.y;
 		}
-		monsterX.y = this.transform.position.y;
-		monsterX.z = this.transform.position.z;
-		this.transform.position = Vector3.Lerp( this.transform.position, monsterX, cameraMoveSpeed * Time.deltaTime );
+		this.transform.position = new Vector3( 
+		                                      Mathf.Lerp( this.transform.position.x, monsterPosition.x, cameraMoveSpeedHorizontally * Time.deltaTime ), 
+		                                      Mathf.Lerp( this.transform.position.y, monsterPosition.y, cameraMoveSpeedVertically * Time.deltaTime ), 
+		                                      this.transform.position.z );
 		cameraPos = this.transform.position;
 	}
 
@@ -55,4 +61,12 @@ public class CameraManager : MonoBehaviour {
 	bool CanMoveRight( ) {
 		return ( this.transform.position.x + cameraHalfWidth < botRightAnchor.position.x );
 	}
+
+	bool CanMoveUp( ) {
+		return ( this.transform.position.y + cameraHalfWidth < topLeftAnchor.position.y );
+	}
+	bool CanMoveDown( ) {
+		return ( this.transform.position.y - cameraHalfWidth > botRightAnchor.position.y );
+	}
+
 }
