@@ -20,10 +20,6 @@ public class DoorTween : PressGesture {
 	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ){
 		switch( e.State ){
 		case Gesture.GestureState.Recognized:
-			if( player.transform.position.x > ( this.transform.position.x + 1.5 ) ){
-			    controller.MoveMonsterOnXAxis( ( ScreenPosition.x + this.transform.position.x ), 
-			    CharacterAnimations.AnimationList.Walking, true );
-			}
 			DoorTrigger( );
 			break;
 		case Gesture.GestureState.Began:

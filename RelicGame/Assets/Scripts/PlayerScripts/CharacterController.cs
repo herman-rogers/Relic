@@ -6,7 +6,7 @@ using TouchScript.Gestures;
 
 public class CharacterController : PressGesture {
 	CharacterAnimations characterAnimations; 
-	GameObject monster;
+	public GameObject monster;
 	Vector3 monsterPosition;
 	float travelDistance;
 	float runSpeed;
@@ -17,42 +17,26 @@ public class CharacterController : PressGesture {
 
 	void Awake( ) {
 		base.Start( );
-		monster = this.transform.parent.gameObject;
 		characterAnimations = new CharacterAnimations( );
 		characterAnimations.InitAnimations( this.gameObject );
 		this.StateChanged += StateChangeHandler;
 	}
 
-	public void MoveMonsterOnXAxis( float xPosition ){
-		MoveMonsterOnXAxis( xPosition, CharacterAnimations.AnimationList.Walking , false );
-	}
-
-	public void MoveMonsterOnXAxis( float xPosition, CharacterAnimations.AnimationList animation ){
-		MoveMonsterOnXAxis( xPosition, animation, false );
-	}
-
-	public void MoveMonsterOnXAxis( float touchPositionX, CharacterAnimations.AnimationList animation, bool isCameraPosition ){
-		Vector3 newMonsterPositionX = new Vector3( 0,0,0 );
-		if( isCameraPosition ){
-			newMonsterPositionX = Camera.main.ScreenToWorldPoint(
-				new Vector3( touchPositionX, 0.0f, 0.0f ) );
-		} else {
-			newMonsterPositionX = new Vector3( touchPositionX, 0.0f, 0.0f );
-		}
-		if( shouldChangeDirectionFacing( newMonsterPositionX.x ) ) {
+	public void MoveMonster( Vector3 screenCoordinate, CharacterAnimations.AnimationList animation ){
+		if( shouldChangeDirectionFacing( screenCoordinate.x ) ) {
 			ChangeDirectionFacing( );
 		}
-		GetNewMonsterPosition( newMonsterPositionX );
-		FindTravelDistance( );
+		monsterPosition = NewMonsterPosition( screenCoordinate );
+		travelDistance = FindDistanceToTravel( );
 		StartMovementAnimation( animation );
 	}
 
-	void GetNewMonsterPosition( Vector3 newDestination ){
-		monsterPosition = new Vector3(  newDestination.x, monster.transform.position.y, monster.transform.position.z );
+	Vector3 NewMonsterPosition( Vector3 newDestination ) {
+		return new Vector3( newDestination.x, newDestination.y, monster.transform.position.z );//TODO: Add a raycast system to be able to 'block' sections of a level that cannot be moved to.
 	}
 
-	void FindTravelDistance( ){
-		travelDistance = Vector3.Distance( monster.transform.position, monsterPosition );
+	float FindDistanceToTravel( ) {
+		return Vector3.Distance( monster.transform.position, monsterPosition );
 	}
 
 	bool shouldChangeDirectionFacing( float positionMovingTowards ) {
@@ -61,43 +45,35 @@ public class CharacterController : PressGesture {
 			( monster.transform.localScale.x < 0.0f &&
 			 monster.transform.position.x > positionMovingTowards );
 	}
-	
-	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ){
-		switch( e.State ){
+
+	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ) {
+		switch( e.State ) {
 		case Gesture.GestureState.Recognized:
-			this.MoveMonsterOnXAxis( ScreenPosition.x, 
-			                        CharacterAnimations.AnimationList.Walking, true );
+			this.MoveMonster( ConvertScreenToWorldSpace( ScreenPositionAsVector3( ) ) ,
+			                        CharacterAnimations.AnimationList.Walking );
 			break;
 		}
 	}
 
-	void ChangeDirectionFacing( ){
-//		int facingDirection = Mathf.FloorToInt( monster.transform.localRotation.y );
-//		if ( monster.transform.position.x < monsterPosition.x && facingDirection == 0 ) {
-//			monster.transform.rotation = new Quaternion( 0,180,0,0 );
-//		}
-//		else if ( monster.transform.position.x > monsterPosition.x && facingDirection == 1  ) {
-//			monster.transform.rotation = new Quaternion( 0,0,0,0 );
-//		}
-
+	void ChangeDirectionFacing( ) {
 		Vector3 changedDirection = monster.transform.localScale;
 		changedDirection.x = -changedDirection.x;
 		monster.transform.localScale = changedDirection;
 	}
 
-	void StartMovementAnimation( CharacterAnimations.AnimationList monsterAnimation ){
-		if ( travelDistance > playerBodyWidth && monsterAnimation != characterAnimations.runningAnimation ){
+	void StartMovementAnimation( CharacterAnimations.AnimationList monsterAnimation ) {
+		if ( travelDistance > playerBodyWidth && monsterAnimation != characterAnimations.runningAnimation ) {
 			characterAnimations.PlayNewAnimation( monsterAnimation, true );
 			SetMonsterMovementSpeed( monsterAnimation );
 			StartCoroutine( "DisplayMonsterMovement" );
 		}
 	}
 
-	void SetMonsterMovementSpeed( CharacterAnimations.AnimationList monsterAnimation ){
-		if( monsterAnimation == CharacterAnimations.AnimationList.Walking ){
+	void SetMonsterMovementSpeed( CharacterAnimations.AnimationList monsterAnimation ) {
+		if( monsterAnimation == CharacterAnimations.AnimationList.Walking ) {
 			runSpeed = monsterMoveSpeedMin;
 		}
-		else if( monsterAnimation == CharacterAnimations.AnimationList.Running ){
+		else if( monsterAnimation == CharacterAnimations.AnimationList.Running ) {
 			runSpeed = monsterMoveSpeedMax;
 		}
 	}
@@ -115,20 +91,16 @@ public class CharacterController : PressGesture {
 		}
 	}
 
-	IEnumerator BlendMonsterMovement( float xPosition, CharacterAnimations.AnimationList animation ){
-		bool startAnimation = false;
-		while( !startAnimation ){
-			if( characterAnimations.runningAnimation != CharacterAnimations.AnimationList.Idle ){
-				continue;
-			}
-			yield return new WaitForSeconds( 1.0f );
-		    MoveMonsterOnXAxis( xPosition, animation );
-			startAnimation = true;
-		}
-	}
-
 	void StopMovement( ){
 		characterAnimations.PlayNewAnimation( CharacterAnimations.AnimationList.Idle );
 		StopCoroutine( "DisplayMonsterMovement" );
 	}
+
+	public static Vector3 ConvertScreenToWorldSpace( Vector3 screenSpace ) {
+		return Camera.main.ScreenToWorldPoint( screenSpace );
+	}
+	
+	public Vector3 ScreenPositionAsVector3( ) {
+		return new Vector3( ScreenPosition.x, ScreenPosition.y, 0.0f );
+    }
 }
