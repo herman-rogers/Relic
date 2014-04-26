@@ -1,6 +1,6 @@
 ﻿//----------------------------------------------
 //            NGUI: Next-Gen UI kit
-// Copyright © 2011-2013 Tasharen Entertainment
+// Copyright © 2011-2014 Tasharen Entertainment
 //----------------------------------------------
 
 using UnityEngine;
@@ -38,6 +38,7 @@ public class UIViewport : MonoBehaviour
 				(br.x - tl.x) / Screen.width, (tl.y - br.y) / Screen.height);
 
 			float size = fullSize * rect.height;
+
 			if (rect != mCam.rect) mCam.rect = rect;
 			if (mCam.orthographicSize != size) mCam.orthographicSize = size;
 		}
