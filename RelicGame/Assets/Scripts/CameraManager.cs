@@ -16,11 +16,20 @@ public class CameraManager : MonoBehaviour {
 	public Transform topLeftAnchor;
 	public Transform botRightAnchor;
 	bool shouldCheckForAnchors;
-	float cameraHalfWidth;
+	public float cameraHalfWidth {
+		get {
+			return ( camera.orthographicSize * camera.aspect );
+		}
+	}
+
+	public float cameraHalfHeight {
+		get {
+			return ( camera.orthographicSize );
+		}
+	}
 
 	private void Awake( ) {
 		shouldCheckForAnchors = HasAnchors( );
-		cameraHalfWidth = ( camera.orthographicSize * camera.aspect );
 	}
 
 	bool HasAnchors( ) {
