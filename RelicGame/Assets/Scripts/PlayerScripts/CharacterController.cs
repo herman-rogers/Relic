@@ -15,6 +15,14 @@ public class CharacterController : PressGesture {
 	const float monsterMoveSpeedMax = 1.0f;
 	const float monsterMoveSpeedMin = 1.5f;
 
+	void OnLevelWasLoaded( int level ) {
+	
+		//Lookup scenemap and work out where to load from.
+	}
+
+	void InitiateMonsterPosition( SceneLoaderOnTouch.SceneLoadInfomation sceneInfo ) {
+	}
+
 	void Awake( ) {
 		base.Start( );
 		characterAnimations = new CharacterAnimations( );
