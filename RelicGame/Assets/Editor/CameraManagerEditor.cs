@@ -12,19 +12,32 @@ public class CameraManagerEditor : Editor {
 	}
 
 	void OnSceneGUI( ) {
-		Debug.Log( "HELLO CAMERA MANAGER EDITOR!" );
 		Event sceneEvent = Event.current;
 
 		Vector2[ ] screenPoints = new Vector2[ 4 ];
 		for( int i = 0; i < 4; i ++ ) {
-			screenPoints[i] = cameraCorners( )[ i ];//HandleUtility.WorldToGUIPoint( cameraCorners( )[ i ] );
+			screenPoints[i] = cameraCorners( )[ i ];
 		}
-//		Handles.DrawLine( new Vector3( 0.0f, 0.0f, 0.0f ), new Vector3( 100.0f, 100.0f, 100.0f ) );
 		Handles.color = Color.blue;
 		Handles.DrawLine( screenPoints[ 0 ], screenPoints[ 1 ] );
 		Handles.DrawLine( screenPoints[ 1 ], screenPoints[ 3 ] );
 		Handles.DrawLine( screenPoints[ 3 ], screenPoints[ 2 ] );
 		Handles.DrawLine( screenPoints[ 2 ], screenPoints[ 0 ] );
+
+		DrawCameraAnchors( cameraManagerInstance );
+	}
+
+	void DrawCameraAnchors( CameraManager cameraManager ) {
+		DrawAnchor( cameraManager.topLeftAnchor );
+		DrawAnchor( cameraManager.botRightAnchor );
+	}
+
+	void DrawAnchor( Vector3 anchor ) {
+		Handles.color = Color.green;
+		Handles.DrawLine( anchor + new Vector3( 0.2f, 0.0f, 0.0f ), 
+		                 anchor - new Vector3( 0.2f, 0.0f, 0.0f ));
+		Handles.DrawLine( anchor + new Vector3( 0.0f, 0.2f, 0.0f ), 
+		                 anchor - new Vector3( 0.0f, 0.2f, 0.0f ));
 	}
 
 	Vector3[ ] cameraCorners( ) {
@@ -56,5 +69,4 @@ public class CameraManagerEditor : Editor {
 		}
 		return cameraCorners;
 	}
-
 }
