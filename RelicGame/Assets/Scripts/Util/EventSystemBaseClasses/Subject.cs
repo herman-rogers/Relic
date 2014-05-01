@@ -6,7 +6,8 @@ public class Subject : MonoBehaviour {
 
 	private static List< Observer > listOfObservers = new List< Observer >( );
 
-	public static void addObserver( Observer newObserver ) {
+	public static void AddObserver( Observer newObserver ) {
+		GarbageCollectObservers( );
 		if( !listOfObservers.Contains( newObserver ) ) {
 		    listOfObservers.Add( newObserver );
 		} else {
@@ -15,7 +16,7 @@ public class Subject : MonoBehaviour {
 		}
 	}
 
-	public static void removeObserver( Observer oldObserver ) {
+	public static void RemoveObserver( Observer oldObserver ) {
 		if( listOfObservers.Contains( oldObserver ) ) {
 		    listOfObservers.Remove( oldObserver );
 		} else {
@@ -28,5 +29,13 @@ public class Subject : MonoBehaviour {
 		foreach( Observer eventObserver in listOfObservers ) {
 			eventObserver.OnNotify( sender, new EventArguments( eventName ) );
 		}
+	}
+
+	public static void NumberOfObserversAdded( ){
+		Debug.Log( listOfObservers.Count );
+	}
+
+	static void GarbageCollectObservers( ){
+		listOfObservers.RemoveAll( item => item == null );
 	}
 }

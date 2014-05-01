@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 //Base class for the Observer of the Event System
@@ -9,8 +9,9 @@ public class EventArguments {
 }
 
 public class Observer : MonoBehaviour {
+
 	void Awake( ) {
-		Subject.addObserver( this );
+		Subject.AddObserver( this );
 	}
 
 	public virtual void OnNotify( object sender, EventArguments e ) {
