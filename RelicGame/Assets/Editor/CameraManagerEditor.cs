@@ -2,9 +2,13 @@
 using System.Collections;
 using UnityEditor;
 
+
+//This editor script is just for practise and will be thrown away as it doesn't add any real value.
+[ System.Serializable ]
 [ CustomEditor ( typeof ( CameraManager ) ) ]
 public class CameraManagerEditor : Editor {
 
+	[ SerializeField ]
 	CameraManager cameraManagerInstance;
 
 	void OnEnable( ) {
@@ -13,23 +17,30 @@ public class CameraManagerEditor : Editor {
 
 	void OnSceneGUI( ) {
 		Event sceneEvent = Event.current;
+		DrawCameraBorders( );
+		DrawCameraAnchors( cameraManagerInstance );
+	}
 
+	void DrawCameraBorders( ) {
 		Vector2[ ] screenPoints = new Vector2[ 4 ];
 		for( int i = 0; i < 4; i ++ ) {
-			screenPoints[i] = cameraCorners( )[ i ];
+			screenPoints[ i ] = cameraCorners( )[ i ];
 		}
 		Handles.color = Color.blue;
 		Handles.DrawLine( screenPoints[ 0 ], screenPoints[ 1 ] );
 		Handles.DrawLine( screenPoints[ 1 ], screenPoints[ 3 ] );
 		Handles.DrawLine( screenPoints[ 3 ], screenPoints[ 2 ] );
 		Handles.DrawLine( screenPoints[ 2 ], screenPoints[ 0 ] );
-
-		DrawCameraAnchors( cameraManagerInstance );
 	}
 
 	void DrawCameraAnchors( CameraManager cameraManager ) {
-		DrawAnchor( cameraManager.topLeftAnchor );
-		DrawAnchor( cameraManager.botRightAnchor );
+		cameraManager.topLeftAnchor = DrawAndUpdateAnchor( cameraManager.topLeftAnchor );
+		cameraManager.botRightAnchor = DrawAndUpdateAnchor( cameraManager.botRightAnchor );
+	}
+
+	Vector3 DrawAndUpdateAnchor( Vector3 anchor ) {
+		DrawAnchor( anchor );
+		return Handles.PositionHandle( anchor, Quaternion.identity );
 	}
 
 	void DrawAnchor( Vector3 anchor ) {

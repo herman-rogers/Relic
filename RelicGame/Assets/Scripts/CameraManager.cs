@@ -3,6 +3,7 @@ using System.Collections;
 using TouchScript;
 using TouchScript.Events;
 
+[ System.Serializable ]
 public class CameraManager : MonoBehaviour {
 
 	public GameObject monster;
@@ -21,6 +22,7 @@ public class CameraManager : MonoBehaviour {
 		get;
 		set;
 	}
+
 	bool shouldCheckForAnchors;
 	public float cameraHalfWidth {
 		get {
