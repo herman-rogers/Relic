@@ -11,8 +11,8 @@ public class Subject : MonoBehaviour {
 		if( !listOfObservers.Contains( newObserver ) ) {
 		    listOfObservers.Add( newObserver );
 		} else {
-			Debug.LogWarning( "Observer " + newObserver.name 
-			                  + " already in list" );
+			Debug.LogWarning( "List already contains " 
+			                  + newObserver.name );
 		}
 	}
 
@@ -21,7 +21,7 @@ public class Subject : MonoBehaviour {
 		    listOfObservers.Remove( oldObserver );
 		} else {
 			Debug.LogWarning( "No observer named " 
-			                  + oldObserver.name + " found" );
+			                  + oldObserver.name );
 		}
 	}
 

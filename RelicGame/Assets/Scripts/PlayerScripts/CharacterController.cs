@@ -16,7 +16,6 @@ public class CharacterController : PressGesture {
 	const float monsterMoveSpeedMin = 1.5f;
 
 	void OnLevelWasLoaded( int level ) {
-	
 		//Lookup scenemap and work out where to load from.
 	}
 

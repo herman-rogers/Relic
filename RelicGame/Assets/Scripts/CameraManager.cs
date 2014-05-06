@@ -14,14 +14,8 @@ public class CameraManager : MonoBehaviour {
 	bool isMoving = false;
 	public static Vector3 cameraPos;
 
-	public Vector3 topLeftAnchor {
-		get;
-		set;
-	}
-	public Vector3 botRightAnchor {
-		get;
-		set;
-	}
+	public Vector3 topLeftAnchor { get; set; }
+	public Vector3 botRightAnchor { get; set;}
 
 	bool shouldCheckForAnchors;
 	public float cameraHalfWidth {
@@ -66,8 +60,8 @@ public class CameraManager : MonoBehaviour {
 			monsterPosition.y = ( canMoveVertically ) ? monsterPosition.y : this.transform.position.y;
 		}
 		this.transform.position = new Vector3( 
-		                                      Mathf.Lerp( this.transform.position.x, monsterPosition.x, cameraMoveSpeedHorizontally * Time.deltaTime ), 
-		                                      Mathf.Lerp( this.transform.position.y, monsterPosition.y, cameraMoveSpeedVertically * Time.deltaTime ), 
+		                                      Mathf.Lerp( this.transform.position.x, monsterPosition.x, cameraMoveSpeedHorizontally * Time.deltaTime ), this.gameObject.transform.parent.gameObject.transform.position.y,
+		                                      //Mathf.Lerp( this.transform.position.y, monsterPosition.y, cameraMoveSpeedVertically * Time.deltaTime ), 
 		                                      this.transform.position.z );
 		cameraPos = this.transform.position;
 	}
