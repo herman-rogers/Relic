@@ -29,21 +29,24 @@ public class DoorTween : PressGesture {
 
 	void DoorTrigger( ) {
 		if( DoorCanOpen( ) ) {
-			StartCoroutine( "WaitForAnimation" );
+			if( !IsInvoking( "WaitForAnimation" ) ) {
+				StartCoroutine( "WaitForAnimation" );
+			}
 		}
 	}
 
 	bool DoorCanOpen( ) {
 		return (
 			computer.frequency.Evaluate( Time.timeSinceLevelLoad / computer.rateOfFlicker ) > 0.9f
-			&& Mathf.Abs( this.transform.position.x - player.position.x ) < 2.2f//TODO: Build this as a visual component in the editor.
-			);
+			&& Mathf.Abs( this.transform.position.x - player.position.x ) < 2.2f );
 	}
 
 	IEnumerator WaitForAnimation( ){
 		yield return new WaitForSeconds( 0.7f );
 		Color newColor = ( this.renderer.color.a <= 0.0f ) ? new Color( 1.0f, 1.0f, 1.0f, 1.0f ) : new Color( 1.0f, 1.0f, 1.0f, 0.0f );
 		this.renderer.color = newColor;//Turns on and off the spiret via the alpha channel.
+//		SceneLoaderOnTouch.sceneStack.Push( 
+//		        new SceneLoaderOnTouch.SceneLoadInfomation( Application.loadedLevelName, SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.LEFT ) );
 		Application.LoadLevel("oldLab2");
 	}
 }

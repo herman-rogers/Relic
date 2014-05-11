@@ -3,24 +3,59 @@ using System.Collections;
 using Spine;
 using TouchScript;
 using TouchScript.Gestures;
+using System;
 
 public class CharacterController : PressGesture {
-	CharacterAnimations characterAnimations; 
+
 	public GameObject monster;
+	public Transform rightExit;
+	public Transform leftExit;
+	public Transform upExit;
+
+	CharacterAnimations characterAnimations;
 	Vector3 monsterPosition;
 	float travelDistance;
 	float runSpeed;
+
 	const float playerBodyWidth = 0.7f;
 	const float stopWithinRange = 0.01f;
 	const float monsterMoveSpeedMax = 1.0f;
 	const float monsterMoveSpeedMin = 1.5f;
 
 	void OnLevelWasLoaded( int level ) {
-	
-		//Lookup scenemap and work out where to load from.
+		try {
+			SceneLoaderOnTouch.SceneLoadInfomation previousScene = SceneLoaderOnTouch.sceneStack.Pop( ) as SceneLoaderOnTouch.SceneLoadInfomation;
+			InitiateMonsterPosition( previousScene );
+		} catch( Exception ex ) {
+			Debug.LogWarning( "The previous scene didn't load any information about where the player should start. \n" + ex.Message );
+		}
 	}
 
 	void InitiateMonsterPosition( SceneLoaderOnTouch.SceneLoadInfomation sceneInfo ) {
+		switch( sceneInfo.sceneLoadedFrom ) {
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.LEFT ):
+			if( rightExit != null ) {
+				SetMonsterXPosition( rightExit.position.x );
+			}
+			break;
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.RIGHT ):
+			if( leftExit != null ) {
+				SetMonsterXPosition( leftExit.position.x );
+			}
+			break;
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.UP ):
+			if( upExit != null ) {
+				SetMonsterXPosition( upExit.position.x );
+			}
+			break;
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.DOWN ):
+			break;
+		}
+	}
+
+	void SetMonsterXPosition( float newXPosition ) {
+		this.monster.transform.position = 
+			new Vector3( newXPosition, this.monster.transform.position.y, this.monster.transform.position.z );
 	}
 
 	void Awake( ) {

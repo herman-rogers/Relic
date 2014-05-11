@@ -14,14 +14,8 @@ public class CameraManager : MonoBehaviour {
 	bool isMoving = false;
 	public static Vector3 cameraPos;
 
-	public Vector3 topLeftAnchor {
-		get;
-		set;
-	}
-	public Vector3 botRightAnchor {
-		get;
-		set;
-	}
+	public Transform topLeftAnchor;
+	public Transform botRightAnchor;
 
 	bool shouldCheckForAnchors;
 	public float cameraHalfWidth {
@@ -42,7 +36,7 @@ public class CameraManager : MonoBehaviour {
 
 	bool HasAnchors( ) {
 		return ( topLeftAnchor != null && botRightAnchor != null && 
-		        ( topLeftAnchor != Vector3.zero && botRightAnchor != Vector3.zero ) );
+		        ( topLeftAnchor != null && botRightAnchor != null ) );
 	}
 
 	public void Update( ) {
@@ -73,18 +67,18 @@ public class CameraManager : MonoBehaviour {
 	}
 
 	bool CanMoveLeft( ) {
-		return ( this.transform.position.x - cameraHalfWidth > topLeftAnchor.x );
+		return ( this.transform.position.x - cameraHalfWidth > topLeftAnchor.position.x );
 	}
 	
 	bool CanMoveRight( ) {
-		return ( this.transform.position.x + cameraHalfWidth < botRightAnchor.x );
+		return ( this.transform.position.x + cameraHalfWidth < botRightAnchor.position.x );
 	}
 
 	bool CanMoveUp( ) {
-		return ( this.transform.position.y + cameraHalfWidth < topLeftAnchor.y );
+		return ( this.transform.position.y + cameraHalfWidth < topLeftAnchor.position.y );
 	}
 	bool CanMoveDown( ) {
-		return ( this.transform.position.y - cameraHalfWidth > botRightAnchor.y );
+		return ( this.transform.position.y - cameraHalfWidth > botRightAnchor.position.y );
 	}
 
 }
