@@ -2,20 +2,9 @@
 using System.Collections;
 using TouchScript.Gestures;
 
-public class SecondLabTouchInteraction : PressGesture {
+public class SecondLabTouchInteraction : ObjectTouchInteraction {
 
-	void Start( ) {
-		base.Start( );
-		StateChanged += SecondLabObjectInteraction;
-	}
-	
-	protected virtual void SecondLabObjectInteraction(object sender, TouchScript.Events.GestureStateChangeEventArgs e) {
-		switch( e.State ) {
-		case Gesture.GestureState.Recognized:
-			Subject.Notify( this, "SecondLabEvent" );
-			break;
-		case Gesture.GestureState.Began:
-			break;
-		}
+	protected override void GestureStateRecognized( ){
+		Subject.Notify( this, "SecondLabEvent" );
 	}
 }
