@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Subject : MonoBehaviour {
-
 	private static List< Observer > listOfObservers = new List< Observer >( );
 
 	public static void AddObserver( Observer newObserver ) {
@@ -12,7 +11,7 @@ public class Subject : MonoBehaviour {
 		    listOfObservers.Add( newObserver );
 		} else {
 			Debug.LogWarning( "List already contains " 
-			                  + newObserver.name );
+			                  + newObserver.ToString( ) );
 		}
 	}
 
@@ -20,8 +19,8 @@ public class Subject : MonoBehaviour {
 		if( listOfObservers.Contains( oldObserver ) ) {
 		    listOfObservers.Remove( oldObserver );
 		} else {
-			Debug.LogWarning( "No observer named " 
-			                  + oldObserver.name );
+			Debug.LogWarning( "No observer named "
+			                  + oldObserver.ToString( ) );
 		}
 	}
 
@@ -31,8 +30,12 @@ public class Subject : MonoBehaviour {
 		}
 	}
 
-	public static void NumberOfObserversAdded( ){
-		Debug.Log( listOfObservers.Count );
+	public static int NumberOfObserversAdded( ){
+		return listOfObservers.Count;
+	}
+
+	public static void ClearAllObservers( ){
+		listOfObservers.Clear( );
 	}
 
 	static void GarbageCollectObservers( ){
