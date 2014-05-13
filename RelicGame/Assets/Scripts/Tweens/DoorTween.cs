@@ -17,12 +17,10 @@ public class DoorTween : PressGesture {
 		StateChanged += StateChangeHandler;
 	}
 
-	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ){
-		switch( e.State ){
+	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ) {
+		switch( e.State ) {
 		case Gesture.GestureState.Recognized:
 			DoorTrigger( );
-			break;
-		case Gesture.GestureState.Began:
 			break;
 		}
 	}
@@ -41,12 +39,10 @@ public class DoorTween : PressGesture {
 			&& Mathf.Abs( this.transform.position.x - player.position.x ) < 2.2f );
 	}
 
-	IEnumerator WaitForAnimation( ){
+	IEnumerator WaitForAnimation( ) {
 		yield return new WaitForSeconds( 0.7f );
 		Color newColor = ( this.renderer.color.a <= 0.0f ) ? new Color( 1.0f, 1.0f, 1.0f, 1.0f ) : new Color( 1.0f, 1.0f, 1.0f, 0.0f );
 		this.renderer.color = newColor;//Turns on and off the spiret via the alpha channel.
-//		SceneLoaderOnTouch.sceneStack.Push( 
-//		        new SceneLoaderOnTouch.SceneLoadInfomation( Application.loadedLevelName, SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.LEFT ) );
-		Application.LoadLevel("oldLab2");
+		Application.LoadLevel( "oldLab2" );
 	}
 }
