@@ -8,7 +8,7 @@ public class TurbineSceneEventListener : Observer {
 		sceneEvents = eventListener.GetComponent< TurbineEvents >( );
 	}
 
-	public override void OnNotify (object sender, EventArguments e) {
+	public override void OnNotify ( object sender, EventArguments e ) {
 		switch( e.EventMessage ) {
 		    case "PillarEventSceneOne":
 			    sceneEvents.FirstPillarEvent( );

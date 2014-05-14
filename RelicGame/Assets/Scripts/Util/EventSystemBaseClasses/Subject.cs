@@ -4,7 +4,8 @@ using System.Collections.Generic;
 
 public class Subject : MonoBehaviour {
 	private static List< Observer > listOfObservers = new List< Observer >( );
-
+	private static GameObject[] arrayOfUnityObservers;
+	
 	public static void AddObserver( Observer newObserver ) {
 		GarbageCollectObservers( );
 		if( !listOfObservers.Contains( newObserver ) ) {
@@ -13,6 +14,11 @@ public class Subject : MonoBehaviour {
 			Debug.LogWarning( "List already contains " 
 			                  + newObserver.ToString( ) );
 		}
+	}
+
+	public static void AddUnityObservers( ) {
+		arrayOfUnityObservers = new GameObject[]{ };
+		arrayOfUnityObservers = GameObject.FindGameObjectsWithTag( "UnityObserver" );
 	}
 
 	public static void RemoveObserver( Observer oldObserver ) {
@@ -28,6 +34,7 @@ public class Subject : MonoBehaviour {
 		foreach( Observer eventObserver in listOfObservers ) {
 			eventObserver.OnNotify( sender, new EventArguments( eventName ) );
 		}
+		NotifyUnityObservers( sender, eventName );
 	}
 
 	public static int NumberOfObserversAdded( ){
@@ -36,6 +43,15 @@ public class Subject : MonoBehaviour {
 
 	public static void ClearAllObservers( ){
 		listOfObservers.Clear( );
+	}
+
+	static void NotifyUnityObservers( object sender, string eventName ) {
+		if( arrayOfUnityObservers != null ){
+			for( int i = 0; i < arrayOfUnityObservers.Length; i++ ){
+				arrayOfUnityObservers[i].GetComponent< UnityObserver >( ).OnNotify( sender, 
+				                                                                    new EventArguments( eventName ) );
+			}
+		}
 	}
 
 	static void GarbageCollectObservers( ){

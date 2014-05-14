@@ -52,6 +52,8 @@ public class TurbineEvents : MonoBehaviour {
 				previouslyActivatedTurbine.GetComponent< SpriteRenderer >( ).sprite = offSprite;
 			}
 			currentTurbineSwitch.GetComponent< SpriteRenderer >( ).sprite = onSprite;
+			TurbineRotate.activateFirstWindmill = !TurbineRotate.activateFirstWindmill;
+			TurbineRotate.activateSecondWindmill = !TurbineRotate.activateSecondWindmill;
 			previouslyActivatedTurbine = currentTurbineSwitch;
 		}
 	}
