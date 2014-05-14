@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Spine;
 using TouchScript;
@@ -11,6 +11,7 @@ public class CharacterController : PressGesture {
 	public Transform rightExit;
 	public Transform leftExit;
 	public Transform upExit;
+	public Transform downExit;
 
 	CharacterAnimations characterAnimations;
 	Vector3 monsterPosition;
@@ -24,38 +25,47 @@ public class CharacterController : PressGesture {
 
 	void OnLevelWasLoaded( int level ) {
 		try {
-			SceneLoaderOnTouch.SceneLoadInfomation previousScene = SceneLoaderOnTouch.sceneStack.Pop( ) as SceneLoaderOnTouch.SceneLoadInfomation;
-			InitiateMonsterPosition( previousScene );
+			
+			SceneLoaderOnTouch.SceneLoadInfomation.DoorInformation[ ] doorInRoom = SceneLoaderOnTouch.SceneLoadInfomation.GetSceneMapFor( 
+                                     ( SceneLoaderOnTouch.SceneLoadInfomation )SceneLoaderOnTouch.sceneStack.Pop( ) );
+			foreach( SceneLoaderOnTouch.SceneLoadInfomation.DoorInformation door in doorInRoom ) {
+				if( door.destinationSceneName == Application.loadedLevelName ) {
+					InitiateMonsterPosition( door.sideOfSceneToLoadOn );
+				}
+			}
 		} catch( Exception ex ) {
 			Debug.LogWarning( "The previous scene didn't load any information about where the player should start. \n" + ex.Message );
 		}
 	}
 
-	void InitiateMonsterPosition( SceneLoaderOnTouch.SceneLoadInfomation sceneInfo ) {
-		switch( sceneInfo.sceneLoadedFrom ) {
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.LEFT ):
+	void InitiateMonsterPosition( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor doorToMoveTo ) {
+		switch( doorToMoveTo ) {
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.RIGHT ):
 			if( rightExit != null ) {
-				SetMonsterXPosition( rightExit.position.x );
+				SetMonsterXAndYPosition( rightExit.position.x, rightExit.position.y );
 			}
 			break;
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.RIGHT ):
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.LEFT ):
 			if( leftExit != null ) {
-				SetMonsterXPosition( leftExit.position.x );
+				SetMonsterXAndYPosition( leftExit.position.x, leftExit.position.y );
 			}
 			break;
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.UP ):
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.UP ):
 			if( upExit != null ) {
-				SetMonsterXPosition( upExit.position.x );
+				SetMonsterXAndYPosition( upExit.position.x, upExit.position.y );
 			}
 			break;
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneExitUsed.DOWN ):
+		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.DOWN ):
+			if( downExit != null ) {
+				SetMonsterXAndYPosition( downExit.position.x, downExit.position.y );
+			}
 			break;
 		}
 	}
 
-	void SetMonsterXPosition( float newXPosition ) {
+	void SetMonsterXAndYPosition( float newXPosition, float newYPosition ) {
 		this.monster.transform.position = 
-			new Vector3( newXPosition, this.monster.transform.position.y, this.monster.transform.position.z );
+			new Vector3( newXPosition, newYPosition, this.monster.transform.position.z );
 	}
 
 	void Awake( ) {
