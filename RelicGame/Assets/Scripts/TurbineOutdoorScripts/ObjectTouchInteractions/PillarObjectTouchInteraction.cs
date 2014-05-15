@@ -5,6 +5,6 @@ using TouchScript.Gestures;
 public class PillarObjectTouchInteraction : ObjectTouchInteraction {
 	
 	protected override void GestureStateRecognized ( ) {
-		Subject.Notify( this, "PillarEventSceneOne" );
+		Subject.Notify( this, TurbineSceneEventListener.PillarEventSceneOne );
 	}
 }

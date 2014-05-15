@@ -11,5 +11,4 @@ public class UnityObserver : MonoBehaviour {
 	public virtual void OnNotify( object sender, EventArguments e  ) {
 		//Do UnityEvents Here
 	}
-
 }

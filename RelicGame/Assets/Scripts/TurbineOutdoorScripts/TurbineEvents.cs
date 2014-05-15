@@ -4,9 +4,17 @@ using System.Collections;
 public class TurbineEvents : MonoBehaviour {
 	public Sprite onSprite;
 	public Sprite offSprite;
+	public static TurbineState currentTurbineState = TurbineState.turbinesInactive;
 	static bool controlPanelFirstInteraction = true;
-	static bool turbineSwitchFirstInteraction = true;
+    static bool turbineSwitchFirstInteraction = true;
 	static GameObject previouslyActivatedTurbine;
+
+	public enum TurbineState {
+		turbinesInactive,
+		firstTurbineActive,
+		secondTurbineActive,
+		bothTurbinesActive
+	}
 
 	void Awake( ){
 	    TurbineSceneEventListener startListening = new TurbineSceneEventListener( );
@@ -44,22 +52,32 @@ public class TurbineEvents : MonoBehaviour {
 	
 	public void ActivateAltarEvent( object sender ){
 		GameObject currentTurbineSwitch = ( GameObject )sender;
+		if( currentTurbineSwitch.name == "_firstPillar" ) {
+			currentTurbineState = TurbineState.firstTurbineActive;
+		}
+		else if( currentTurbineSwitch.name == "_secondPillar" ){
+			currentTurbineState = TurbineState.secondTurbineActive;
+		} else {
+			currentTurbineState = TurbineState.bothTurbinesActive;
+		}
 		if( turbineSwitchFirstInteraction ) {
 			turbineSwitchFirstInteraction = false;
 			AddTextToPlayersDialogue( "It appears to be some sort of release switch." );
 		} else {
-			if( previouslyActivatedTurbine != null ) {
-				previouslyActivatedTurbine.GetComponent< SpriteRenderer >( ).sprite = offSprite;
-			}
-			currentTurbineSwitch.GetComponent< SpriteRenderer >( ).sprite = onSprite;
-			TurbineRotate.activateFirstWindmill = !TurbineRotate.activateFirstWindmill;
-			TurbineRotate.activateSecondWindmill = !TurbineRotate.activateSecondWindmill;
-			previouslyActivatedTurbine = currentTurbineSwitch;
+			ToggleTurbineSwitch( currentTurbineSwitch );
 		}
 	}
-	
-	
-	public void NPCInteractionEvent( object sender ) {
+
+	void ToggleTurbineSwitch( GameObject turbineSwitch ) {
+		if( previouslyActivatedTurbine != null ) {
+			previouslyActivatedTurbine.GetComponent< SpriteRenderer >( ).sprite = offSprite;
+		}
+		turbineSwitch.GetComponent< SpriteRenderer >( ).sprite = onSprite;
+		previouslyActivatedTurbine = turbineSwitch;
+	}
+
+
+public void NPCInteractionEvent( object sender ) {
 		GameObject npcName = (GameObject)sender;
 		if( npcName.name == "NPCOne" ) {
 			AddTextToPlayersDialogue( "Mol r Great Twins,\n" +

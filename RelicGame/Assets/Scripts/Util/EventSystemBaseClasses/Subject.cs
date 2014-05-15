@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Subject : MonoBehaviour {
 	private static List< Observer > listOfObservers = new List< Observer >( );
-	private static GameObject[] arrayOfUnityObservers;
+	private static List< GameObject > listOfUnityObservers = new List< GameObject >( );
 	
 	public static void AddObserver( Observer newObserver ) {
-		GarbageCollectObservers( );
 		if( !listOfObservers.Contains( newObserver ) ) {
 		    listOfObservers.Add( newObserver );
 		} else {
@@ -17,8 +17,7 @@ public class Subject : MonoBehaviour {
 	}
 
 	public static void AddUnityObservers( ) {
-		arrayOfUnityObservers = new GameObject[]{ };
-		arrayOfUnityObservers = GameObject.FindGameObjectsWithTag( "UnityObserver" );
+		listOfUnityObservers = ( GameObject.FindGameObjectsWithTag( "UnityObserver" ) ).ToList( );
 	}
 
 	public static void RemoveObserver( Observer oldObserver ) {
@@ -31,6 +30,7 @@ public class Subject : MonoBehaviour {
 	}
 
 	public static void Notify( object sender, string eventName ) {
+		GarbageCollectObservers( );
 		foreach( Observer eventObserver in listOfObservers ) {
 			eventObserver.OnNotify( sender, new EventArguments( eventName ) );
 		}
@@ -46,15 +46,14 @@ public class Subject : MonoBehaviour {
 	}
 
 	static void NotifyUnityObservers( object sender, string eventName ) {
-		if( arrayOfUnityObservers != null ){
-			for( int i = 0; i < arrayOfUnityObservers.Length; i++ ){
-				arrayOfUnityObservers[i].GetComponent< UnityObserver >( ).OnNotify( sender, 
-				                                                                    new EventArguments( eventName ) );
-			}
+	    foreach( GameObject unityObserver in listOfUnityObservers ){
+			unityObserver.GetComponent< UnityObserver >( ).OnNotify( sender, 
+				                                                         new EventArguments( eventName ) );
 		}
 	}
 
 	static void GarbageCollectObservers( ){
 		listOfObservers.RemoveAll( item => item == null );
+		listOfUnityObservers.RemoveAll( item => item == null );
 	}
 }

@@ -4,30 +4,20 @@ using System.Collections.Generic;
 
 public class TurbineSceneGlimpse : UnityObserver {
 
-	Transform[] turbineSceneItems = new Transform[]{ };
-
-	void Start( ) {
-		turbineSceneItems = GetComponentsInChildren< Transform >( );
-	}
+	public Camera sceneCamera;
+	static bool firstInteraction = true;
 
 	public override void OnNotify ( object sender, EventArguments e ) {
-		if( e.EventMessage == "AltarObjectEvent" ) {
+		if( e.EventMessage == TurbineSceneEventListener.AltarObjectEvent && !firstInteraction ) {
 			StartCoroutine( ShowTurbineScene( ) );
 		}
+		firstInteraction = false;
 	}
 
 	IEnumerator ShowTurbineScene( ) {
-		yield return new WaitForSeconds( 1.0f );
-		foreach( Transform turbineItem in turbineSceneItems ){
-			ChangeTurbineObjectState( true );
-		}
-		yield return new WaitForSeconds( 5.0f );
-		ChangeTurbineObjectState( false );
-	}
-
-	void ChangeTurbineObjectState( bool state ){
-		foreach( Transform turbineItem in turbineSceneItems ) {
-			turbineItem.gameObject.SetActive( state );
-		}
+		yield return new WaitForSeconds( 0.3f );
+		sceneCamera.gameObject.SetActive( true );
+		yield return new WaitForSeconds( 4.0f );
+		sceneCamera.gameObject.SetActive( false );
 	}
 }
