@@ -1,11 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using TouchScript.Gestures;
+using System.Collections.Generic;
 
 public class SceneLoaderOnTouch : PressGesture {
 
 	public string sceneName;
-	public SceneLoadInfomation.SceneExitUsed sceneExitPosition = SceneLoadInfomation.SceneExitUsed.UNDEFINED;
+	public SceneLoadInfomation.SceneDoor sceneExitPosition = SceneLoadInfomation.SceneDoor.UNDEFINED;
 	public static Stack sceneStack;
 
 	void Start( ) {
@@ -34,9 +35,35 @@ public class SceneLoaderOnTouch : PressGesture {
 	public class SceneLoadInfomation {
 
 		public string previousSceneName = "";
-		public SceneExitUsed sceneLoadedFrom = SceneExitUsed.UNDEFINED;
+		public SceneDoor sceneLoadedFrom = SceneDoor.UNDEFINED;
+		static Dictionary< string, DoorInformation[ ] > sceneMap = new Dictionary< string, DoorInformation[ ] >( ) {
+			{ "oldLab", new DoorInformation[ ] {
+					new DoorInformation( "oldLab2", SceneDoor.RIGHT )
+				}
+			},
+			{ "oldLab2", new DoorInformation[ ] { 
+					new DoorInformation( "oldLab", SceneDoor.LEFT ),
+					new DoorInformation( "elevatorShaft(Top)", SceneDoor.RIGHT ),
+					new DoorInformation( "oldLab3", SceneDoor.LEFT )
+				}
+			},
+			{ "oldLab3",new DoorInformation[ ] {
+					new DoorInformation( "oldLab2", SceneDoor.LEFT ) 
+				}
+			},
+			{ "elevatorShaft(Underground)", new DoorInformation[ ] { 
+					new DoorInformation( "elevatorShaft(Top)", SceneDoor.UP ),
+					new DoorInformation( "oldLab2", SceneDoor.UP ) 
+				}
+			},
+			{ "elevatorShaft(Top)", new DoorInformation[ ] {
+					new DoorInformation( "elevatorShaft(Underground)", SceneDoor.DOWN ),
+					new DoorInformation( "oldLabExit", SceneDoor.RIGHT ) 
+				}
+			}
+		};
 
-		public enum SceneExitUsed {
+		public enum SceneDoor {
 			LEFT,
 			RIGHT,
 			DOWN,
@@ -44,9 +71,28 @@ public class SceneLoaderOnTouch : PressGesture {
 			UNDEFINED
 		}
 
-		public SceneLoadInfomation( string previousSceneName, SceneExitUsed leaveSceneFrom ) {
-			this.previousSceneName = previousSceneName;
-			this.sceneLoadedFrom = leaveSceneFrom;
+		public SceneLoadInfomation( string previousSceneName, SceneDoor leaveSceneFrom ) {
+				this.previousSceneName = previousSceneName;
+				this.sceneLoadedFrom = leaveSceneFrom;
+		}
+
+		public static DoorInformation[ ] GetSceneMapFor( SceneLoadInfomation sceneName ) {
+			try {
+				return sceneMap[ sceneName.previousSceneName ];
+			} catch( System.Exception ex ) {
+				Debug.LogError( "Something happened \n" + ex.Message );
+				return sceneMap[ "ERROR!" ];
+			}
+		}
+
+		public class DoorInformation {
+			public string destinationSceneName;
+			public SceneDoor sideOfSceneToLoadOn;
+
+			public DoorInformation( string sceneToLoad, SceneDoor sideToEnterFrom ) {
+				this.destinationSceneName = sceneToLoad;
+				this.sideOfSceneToLoadOn = sideToEnterFrom;
+			}
 		}
 	}
 }
