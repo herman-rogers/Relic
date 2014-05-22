@@ -36,13 +36,34 @@ public class SceneLoaderOnTouch : PressGesture {
 
 		public string previousSceneName = "";
 		public SceneDoor sceneLoadedFrom = SceneDoor.UNDEFINED;
+		//This is a complicated mess. You're not supposed to understand it as it is.
 		static Dictionary< string, DoorInformation[ ] > sceneMap = new Dictionary< string, DoorInformation[ ] >( ) {
 			{ "oldLab", new DoorInformation[ ] {
+					new DoorInformation( "oldLabHallway", SceneDoor.RIGHT )
+				}
+			},
+			{ "oldLabHallway", new DoorInformation[ ] {
+					new DoorInformation( "oldLabHallway", SceneDoor.LEFT ),
+					new DoorInformation( "colleagueRoom", SceneDoor.LEFT ),
+					new DoorInformation( "oldLab4", SceneDoor.LEFT ),
+					new DoorInformation( "stairway", SceneDoor.RIGHT )
+				}
+			},
+			{ "oldLab4", new DoorInformation[ ] {
+					new DoorInformation( "oldLabHallway", SceneDoor.DOWN )
+				}
+			},
+			{ "colleagueRoom", new DoorInformation[ ] {
+					new DoorInformation( "oldLabHallway", SceneDoor.UP )
+				}
+			},
+			{ "stairway", new DoorInformation[ ] {
+					new DoorInformation( "oldLabHallway", SceneDoor.LEFT ),
 					new DoorInformation( "oldLab2", SceneDoor.RIGHT )
 				}
 			},
 			{ "oldLab2", new DoorInformation[ ] { 
-					new DoorInformation( "oldLab", SceneDoor.LEFT ),
+					new DoorInformation( "stairway", SceneDoor.LEFT ),
 					new DoorInformation( "elevatorShaft(Top)", SceneDoor.RIGHT ),
 					new DoorInformation( "oldLab3", SceneDoor.LEFT )
 				}

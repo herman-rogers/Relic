@@ -43,6 +43,6 @@ public class DoorTween : PressGesture {
 		yield return new WaitForSeconds( 0.7f );
 		Color newColor = ( this.renderer.color.a <= 0.0f ) ? new Color( 1.0f, 1.0f, 1.0f, 1.0f ) : new Color( 1.0f, 1.0f, 1.0f, 0.0f );
 		this.renderer.color = newColor;//Turns on and off the spiret via the alpha channel.
-		Application.LoadLevel( "oldLab2" );
+		Application.LoadLevel( "oldLabHallway" );
 	}
 }
