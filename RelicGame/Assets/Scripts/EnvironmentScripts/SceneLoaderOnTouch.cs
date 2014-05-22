@@ -63,7 +63,7 @@ public class SceneLoaderOnTouch : PressGesture {
 				}
 			},
 			{ "oldLab2", new DoorInformation[ ] { 
-					new DoorInformation( "stairway", SceneDoor.LEFT ),
+					new DoorInformation( "stairway", SceneDoor.UP ),
 					new DoorInformation( "elevatorShaft(Top)", SceneDoor.RIGHT ),
 					new DoorInformation( "oldLab3", SceneDoor.LEFT )
 				}
