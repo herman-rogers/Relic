@@ -99,14 +99,43 @@ public class CharacterController : PressGesture {
 			 monster.transform.position.x > positionMovingTowards );
 	}
 
+    void Update( ) {
+        Debug.DrawLine( worldCoordinates, walkableArea[ 0 ], Color.red );
+        Debug.DrawLine( worldCoordinates, walkableArea[ 1 ], Color.red );
+        Debug.DrawLine( worldCoordinates, walkableArea[ 2 ], Color.green );
+        Debug.DrawLine( worldCoordinates, walkableArea[ 3 ], Color.green );
+    }
+
 	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ) {
 		switch( e.State ) {
 		case Gesture.GestureState.Recognized:
-			this.MoveMonster( ConvertScreenToWorldSpace( ScreenPositionAsVector3( ) ) ,
-			                        CharacterAnimations.AnimationList.Walking );
+                if( InWalkableArea( ConvertScreenToWorldSpace( ScreenPositionAsVector3( ) ) ) ) {
+                    this.MoveMonster( ConvertScreenToWorldSpace( ScreenPositionAsVector3( ) ),
+                            CharacterAnimations.AnimationList.Walking );
+                }
 			break;
 		}
 	}
+
+    public Vector3[ ] walkableArea;
+    public Vector3 worldCoordinates;
+
+    bool InWalkableArea( Vector3 worldCoordinates ) {
+        this.worldCoordinates = worldCoordinates;
+        if( worldCoordinates.x < walkableArea[ 0 ].x ) {//0 is left most.
+            return false;
+        }
+        if( worldCoordinates.x > walkableArea[ 1 ].x ) {//1 is right most.
+            return false;
+        }
+        if( worldCoordinates.y < walkableArea[ 2 ].y ) {//2 is top.
+            return false;
+        }
+        if( worldCoordinates.y > walkableArea[ 3 ].y ) {//3 is down.
+            return false;
+        }
+        return true;
+    }
 
 	void ChangeDirectionFacing( ) {
 		Vector3 changedDirection = monster.transform.localScale;
