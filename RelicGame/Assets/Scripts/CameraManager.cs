@@ -3,61 +3,82 @@ using System.Collections;
 using TouchScript;
 using TouchScript.Events;
 
+[ System.Serializable ]
 public class CameraManager : MonoBehaviour {
 
 	public GameObject monster;
-	public Vector2    firstTouchPosition;
-	public Vector2    secondTouchPosition;
-	public Vector2    currentTouchMovement;
-	public bool       hasTouchEnded{ get; private set; }
-	bool              isMoving = false;
+	[ Range( 0.1f, 5.0f ) ]
+	public float cameraMoveSpeedHorizontally = 0.5f;
+	[ Range( 0.1f, 5.0f ) ]
+	public float cameraMoveSpeedVertically = 0.5f;
+	bool isMoving = false;
 	public static Vector3 cameraPos;
 
-	void Start( ) {
-//		TouchManager.Instance.TouchesBegan += OnTouchBegin;
-//		TouchManager.Instance.TouchesMoved += OnTouchContinue;
-//		TouchManager.Instance.TouchesEnded += OnTouchEnd;
-	}
+	public Transform topLeftAnchor;
+	public Transform botRightAnchor;
 
-	public void OnTouchBegin( object sender, TouchEventArgs e ) {
-		foreach( TouchPoint point in e.TouchPoints ) {
-			firstTouchPosition = new Vector2( point.Position.x, point.Position.y );
+	bool shouldCheckForAnchors;
+	public float cameraHalfWidth {
+		get {
+			return ( camera.orthographicSize * camera.aspect );
 		}
 	}
 
-	public void OnTouchContinue( object sender, TouchEventArgs e ) {
-		foreach( var point in e.TouchPoints ) {
-			secondTouchPosition  = new Vector2( point.Position.x, point.Position.y );
-			currentTouchMovement = new Vector2( ( secondTouchPosition.x - firstTouchPosition.x ),
-			                                    ( secondTouchPosition.y - firstTouchPosition.y ));
-			currentTouchMovement.Normalize( );
+	public float cameraHalfHeight {
+		get {
+			return ( camera.orthographicSize );
 		}
-    }
+	}
 
-    public void OnTouchEnd( object sender, TouchEventArgs e ) {
-		hasTouchEnded = true;
-    }
+	private void Awake( ) {
+		shouldCheckForAnchors = HasAnchors( );
+	}
 
-    public void Update( ) {
+	bool HasAnchors( ) {
+		return ( topLeftAnchor != null && botRightAnchor != null && 
+		        ( topLeftAnchor != null && botRightAnchor != null ) );
+	}
+
+	public void Update( ) {
 		if( !isMoving && ( this.camera.WorldToScreenPoint( monster.transform.position ) ).x < 250.0f || 
 		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) < 250.0f ) {
 			isMoving = true;
-			LerpCamera( );
 		}
 		else if( isMoving ) {
-			LerpCamera( );
-			if( ( this.camera.WorldToScreenPoint(monster.transform.position ) ).x > 300.0f && 
-			   ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) > 300.0f ) {
-				isMoving = false;
-			}
+			isMoving = !( ( this.camera.WorldToScreenPoint(monster.transform.position ) ).x > 300.0f && 
+			             ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) > 300.0f );
 		}
+		LerpCamera( );
 	}
 
 	void LerpCamera( ) {
-		Vector3 monsterX = monster.transform.position;
-		monsterX.y = this.transform.position.y;
-		monsterX.z = this.transform.position.z;
-		this.transform.position = Vector3.Lerp( this.transform.position, monsterX, 0.5f * Time.deltaTime );
+		Vector3 monsterPosition = monster.transform.position;
+		if( shouldCheckForAnchors ) {
+			bool canMoveHorizontally = ( monsterPosition.x > this.transform.position.x ) ? CanMoveRight( ) : CanMoveLeft( );
+			bool canMoveVertically = ( monsterPosition.y > this.transform.position.y ) ? CanMoveUp( ) : CanMoveDown( );
+			monsterPosition.x = ( canMoveHorizontally ) ? monsterPosition.x : this.transform.position.x;
+			monsterPosition.y = ( canMoveVertically ) ? monsterPosition.y : this.transform.position.y;
+		}
+		this.transform.position = new Vector3( 
+		                                      Mathf.Lerp( this.transform.position.x, monsterPosition.x, cameraMoveSpeedHorizontally * Time.deltaTime ), 
+		                                      Mathf.Lerp( this.transform.position.y, monsterPosition.y, cameraMoveSpeedVertically * Time.deltaTime ), 
+		                                      this.transform.position.z );
 		cameraPos = this.transform.position;
 	}
+
+	bool CanMoveLeft( ) {
+		return ( this.transform.position.x - cameraHalfWidth > topLeftAnchor.position.x );
+	}
+	
+	bool CanMoveRight( ) {
+		return ( this.transform.position.x + cameraHalfWidth < botRightAnchor.position.x );
+	}
+
+	bool CanMoveUp( ) {
+		return ( this.transform.position.y + cameraHalfWidth < topLeftAnchor.position.y );
+	}
+	bool CanMoveDown( ) {
+		return ( this.transform.position.y - cameraHalfWidth > botRightAnchor.position.y );
+	}
+
 }
