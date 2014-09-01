@@ -8,9 +8,13 @@ public class Polygon : MonoBehaviour {
 
     void Update( ) { 
         Vector2 previousCorner = Vector2.zero;
-        for( int i = 0; i < ( polygonCorners.Length - 1 ); i++ ) {
+        int j = 1;
+        for( int i = 0; i < polygonCorners.Length; i++, j++ ) {
+            if( j >= polygonCorners.Length ) {
+                j = 0;//TODO: Figure out better way of looping this.
+            }
             DrawPoint( polygonCorners[ i ] );
-            Debug.DrawLine( polygonCorners[ i ], polygonCorners[ i + 1 ], Color.red );
+            Debug.DrawLine( polygonCorners[ i ], polygonCorners[ j ], Color.red );
         }
     }
 
@@ -33,11 +37,15 @@ public class Polygon : MonoBehaviour {
     /// <returns> Will return false if it isn't and true if it is. </returns>
     public bool PointInPoly( Vector2 point ) {
         bool oddNumberOfIntersection = false;
-        for( int i = 0; i < ( polygonCorners.Length - 1 ); i++ ) {
-               if( polygonCorners[ i ].y < point.y && polygonCorners[ i + 1 ].y >= point.y
-                   || polygonCorners[ i + 1 ].y < point.y && polygonCorners[ i ].y >= point.y ) {
+        int j = 1;
+        for( int i = 0; i < polygonCorners.Length; i++, j++ ) {
+            if( j >= polygonCorners.Length ) {
+                j = 0;//TODO: Figure out better way of looping this.
+            }
+               if( polygonCorners[ i ].y < point.y && polygonCorners[ j ].y >= point.y
+                   || polygonCorners[ j ].y < point.y && polygonCorners[ i ].y >= point.y ) {
                     if( polygonCorners[ i ].x + ( point.y - polygonCorners[ i ].y )
-                        / ( polygonCorners[ i + 1 ].y - polygonCorners[ i ].y ) * ( polygonCorners[ i + 1 ].x - polygonCorners[ i ].x ) < point.x ) {
+                        / ( polygonCorners[ j ].y - polygonCorners[ i ].y ) * ( polygonCorners[ j ].x - polygonCorners[ i ].x ) < point.x ) {
                             oddNumberOfIntersection = !oddNumberOfIntersection;
                     }
                }
