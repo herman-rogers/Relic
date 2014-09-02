@@ -12,17 +12,47 @@ public class CharacterController : PressGesture {
 	public Transform leftExit;
 	public Transform upExit;
 	public Transform downExit;
-    public NavigationMesh2D navMesh;
 
 	CharacterAnimations characterAnimations;
 	Vector3 monsterPosition;
 	float travelDistance;
 	float runSpeed;
+    NavigationMesh2D navMesh;
 
 	const float playerBodyWidth = 0.7f;
 	const float stopWithinRange = 0.01f;
 	const float monsterMoveSpeedMax = 1.0f;
 	const float monsterMoveSpeedMin = 1.5f;
+
+    void Start( ) {
+        navMesh = FindNavigationMesh( );
+    }
+
+    NavigationMesh2D FindNavigationMesh( ) {
+
+        const string NAVIGATION_MESH_TAG = "NavigationMesh";
+        GameObject[ ] navMeshLookup = GameObject.FindGameObjectsWithTag( NAVIGATION_MESH_TAG );
+        ArrayList foundNavMeshes = new ArrayList( );
+        foreach( GameObject go in navMeshLookup ) {
+            NavigationMesh2D navMesh = go.GetComponent<NavigationMesh2D>( );
+            if( navMesh != null ) {
+                foundNavMeshes.Add( navMesh );
+            }
+        }
+        if( foundNavMeshes.Count > 1 ) {
+            Debug.LogError( "Found multiple navigation meshes! \n" +
+                            "There should only be one navigation mesh per scene." );
+        } else if( foundNavMeshes.Count == 0 ) {
+            Debug.LogWarning( "No navigation meshes found. Creating dummy navigation mesh. \n" + 
+                "Check to see if the NavigationMesh is tagged as NavigationMesh." );
+            GameObject dummyNavigation = new GameObject( );
+            dummyNavigation.name = "DummyNavigationMesh";
+            NavigationMesh2D navMesh = dummyNavigation.AddComponent<NavigationMesh2D>( );
+            navMesh.tag = NAVIGATION_MESH_TAG;
+            foundNavMeshes.Add( navMesh );
+        }
+        return foundNavMeshes[ 0 ] as NavigationMesh2D;
+    }
 
 	void OnLevelWasLoaded( int level ) {
 		try {
@@ -76,17 +106,17 @@ public class CharacterController : PressGesture {
 		this.StateChanged += StateChangeHandler;
 	}
 
-	public void MoveMonster( Vector3 screenCoordinate, CharacterAnimations.AnimationList animation ){
-		if( shouldChangeDirectionFacing( screenCoordinate.x ) ) {
+	public void MoveMonster( Vector3 worldCoordinates, CharacterAnimations.AnimationList animation ){
+		if( shouldChangeDirectionFacing( worldCoordinates.x ) ) {
 			ChangeDirectionFacing( );
 		}
-		monsterPosition = NewMonsterPosition( screenCoordinate );
+		monsterPosition = NewMonsterPosition( worldCoordinates );
 		travelDistance = FindDistanceToTravel( );
 		StartMovementAnimation( animation );
 	}
 
 	Vector3 NewMonsterPosition( Vector3 newDestination ) {
-		return new Vector3( newDestination.x, newDestination.y, monster.transform.position.z );//TODO: Add a raycast system to be able to 'block' sections of a level that cannot be moved to.
+		return new Vector3( newDestination.x, newDestination.y, monster.transform.position.z );
 	}
 
 	float FindDistanceToTravel( ) {
@@ -135,10 +165,10 @@ public class CharacterController : PressGesture {
 	}
 
 	IEnumerator DisplayMonsterMovement( ){
-		for( float i = travelDistance; i > stopWithinRange; ){
+		for( float i = travelDistance; i > stopWithinRange; ) {
 			float speed = ( ( runSpeed * Time.deltaTime ) / travelDistance );
 			travelDistance = Vector3.Distance( monster.transform.position, monsterPosition );
-			if ( travelDistance <= stopWithinRange ){
+			if( travelDistance <= stopWithinRange ) {
 			    StopMovement( );
 			}
 			i = travelDistance;
