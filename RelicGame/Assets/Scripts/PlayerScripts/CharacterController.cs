@@ -5,74 +5,35 @@ using TouchScript;
 using TouchScript.Gestures;
 using System;
 
+public enum PlayerInput
+{
+	STOP_PLAYER_INPUT,
+	START_PLAYER_INPUT
+}
+
 public class CharacterController : PressGesture {
-
-	public GameObject monster;
-	public Transform rightExit;
-	public Transform leftExit;
-	public Transform upExit;
-	public Transform downExit;
-
-	CharacterAnimations characterAnimations;
-	Vector3 monsterPosition;
-	float travelDistance;
-	float runSpeed;
-
-	const float playerBodyWidth = 0.7f;
-	const float stopWithinRange = 0.01f;
-	const float monsterMoveSpeedMax = 1.0f;
-	const float monsterMoveSpeedMin = 1.5f;
-
-	void OnLevelWasLoaded( int level ) {
-		try {
-			
-			SceneLoaderOnTouch.SceneLoadInfomation.DoorInformation[ ] doorInRoom = SceneLoaderOnTouch.SceneLoadInfomation.GetSceneMapFor( 
-                                     ( SceneLoaderOnTouch.SceneLoadInfomation )SceneLoaderOnTouch.sceneStack.Pop( ) );
-			foreach( SceneLoaderOnTouch.SceneLoadInfomation.DoorInformation door in doorInRoom ) {
-				if( door.destinationSceneName == Application.loadedLevelName ) {
-					InitiateMonsterPosition( door.sideOfSceneToLoadOn );
-				}
-			}
-		} catch( Exception ex ) {
-			Debug.LogWarning( "The previous scene didn't load any information about where the player should start. \n" + ex.Message );
-		}
-	}
-
-	void InitiateMonsterPosition( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor doorToMoveTo ) {
-		switch( doorToMoveTo ) {
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.RIGHT ):
-			if( rightExit != null ) {
-				SetMonsterXAndYPosition( rightExit.position.x, rightExit.position.y );
-			}
-			break;
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.LEFT ):
-			if( leftExit != null ) {
-				SetMonsterXAndYPosition( leftExit.position.x, leftExit.position.y );
-			}
-			break;
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.UP ):
-			if( upExit != null ) {
-				SetMonsterXAndYPosition( upExit.position.x, upExit.position.y );
-			}
-			break;
-		case( SceneLoaderOnTouch.SceneLoadInfomation.SceneDoor.DOWN ):
-			if( downExit != null ) {
-				SetMonsterXAndYPosition( downExit.position.x, downExit.position.y );
-			}
-			break;
-		}
-	}
-
-	void SetMonsterXAndYPosition( float newXPosition, float newYPosition ) {
-		this.monster.transform.position = 
-			new Vector3( newXPosition, newYPosition, this.monster.transform.position.z );
-	}
+	public GameObject player;
+	public static PlayerInput togglePlayerInput = PlayerInput.START_PLAYER_INPUT;
+	private CharacterAnimations characterAnimations;
+	private Vector3 monsterPosition;
+	private float travelDistance;
+	private float runSpeed;
+	private const float playerBodyWidth = 0.7f;
+	private const float stopWithinRange = 0.01f;
+	private const float monsterMoveSpeedMax = 1.0f;
+	private const float monsterMoveSpeedMin = 1.5f;
 
 	void Awake( ) {
 		base.Start( );
 		characterAnimations = new CharacterAnimations( );
-		characterAnimations.InitAnimations( this.gameObject );
-		this.StateChanged += StateChangeHandler;
+		characterAnimations.InitAnimations( gameObject );
+		StateChanged += StateChangeHandler;
+	}
+
+	private void SetPlayerPosition( float newXPosition, float newYPosition ) {
+		player.transform.position = new Vector3( newXPosition, 
+		                                         newYPosition, 
+		                                         player.transform.position.z );
 	}
 
 	public void MoveMonster( Vector3 screenCoordinate, CharacterAnimations.AnimationList animation ){
@@ -85,33 +46,37 @@ public class CharacterController : PressGesture {
 	}
 
 	Vector3 NewMonsterPosition( Vector3 newDestination ) {
-		return new Vector3( newDestination.x, newDestination.y, monster.transform.position.z );//TODO: Add a raycast system to be able to 'block' sections of a level that cannot be moved to.
+		return new Vector3( newDestination.x, player.transform.position.y, player.transform.position.z );
 	}
 
 	float FindDistanceToTravel( ) {
-		return Vector3.Distance( monster.transform.position, monsterPosition );
+		return Vector3.Distance( player.transform.position, monsterPosition );
 	}
 
 	bool shouldChangeDirectionFacing( float positionMovingTowards ) {
-		return ( monster.transform.localScale.x > 0.0f &&
-		    monster.transform.position.x < positionMovingTowards ) ||
-			( monster.transform.localScale.x < 0.0f &&
-			 monster.transform.position.x > positionMovingTowards );
+		return ( player.transform.localScale.x > 0.0f &&
+		         player.transform.position.x < positionMovingTowards ) ||
+			   ( player.transform.localScale.x < 0.0f &&
+			     player.transform.position.x > positionMovingTowards );
 	}
 
 	void StateChangeHandler( object sender, TouchScript.Events.GestureStateChangeEventArgs e ) {
+		if( togglePlayerInput == PlayerInput.STOP_PLAYER_INPUT )
+		{
+			return;
+		}
 		switch( e.State ) {
 		case Gesture.GestureState.Recognized:
-			this.MoveMonster( ConvertScreenToWorldSpace( ScreenPositionAsVector3( ) ) ,
-			                        CharacterAnimations.AnimationList.Walking );
+			MoveMonster( ConvertScreenToWorldSpace( ScreenPositionAsVector3( ) ) ,
+			             CharacterAnimations.AnimationList.Walking );
 			break;
 		}
 	}
 
 	void ChangeDirectionFacing( ) {
-		Vector3 changedDirection = monster.transform.localScale;
+		Vector3 changedDirection = player.transform.localScale;
 		changedDirection.x = -changedDirection.x;
-		monster.transform.localScale = changedDirection;
+		player.transform.localScale = changedDirection;
 	}
 
 	void StartMovementAnimation( CharacterAnimations.AnimationList monsterAnimation ) {
@@ -134,12 +99,12 @@ public class CharacterController : PressGesture {
 	IEnumerator DisplayMonsterMovement( ){
 		for( float i = travelDistance; i > stopWithinRange; ){
 			float speed = ( ( runSpeed * Time.deltaTime ) / travelDistance );
-			travelDistance = Vector3.Distance( monster.transform.position, monsterPosition );
+			travelDistance = Vector3.Distance( player.transform.position, monsterPosition );
 			if ( travelDistance <= stopWithinRange ){
 			    StopMovement( );
 			}
 			i = travelDistance;
-			monster.transform.position = Vector3.Lerp( monster.transform.position, monsterPosition, speed );
+			player.transform.position = Vector3.Lerp( player.transform.position, monsterPosition, speed );
 			yield return new WaitForSeconds( 0.01f );
 		}
 	}

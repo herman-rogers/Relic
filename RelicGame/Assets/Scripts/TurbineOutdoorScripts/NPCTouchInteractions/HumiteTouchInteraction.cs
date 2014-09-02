@@ -4,6 +4,6 @@ using System.Collections;
 public class HumiteTouchInteraction : ObjectTouchInteraction {
 
 	protected override void GestureStateRecognized( ) {
-		Subject.Notify( this.gameObject, "NPCEvent" );
+		Subject.NotifySendAll( this.gameObject, "NPCEvent", "No Message" );
 	}
 }

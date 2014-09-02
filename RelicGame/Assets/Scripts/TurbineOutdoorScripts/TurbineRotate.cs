@@ -6,8 +6,8 @@ public class TurbineRotate : UnityObserver {
 	public GameObject windTurbineOne;
 	public GameObject windTurbineTwo;
 
-	public override void OnNotify( object sender, EventArguments e ) {
-		if( e.EventMessage == TurbineSceneEventListener.AltarObjectEvent ){
+	public override void OnNotify( Object sender, EventArguments e ) {
+		if( e.eventMessage == TurbineSceneEventListener.AltarObjectEvent ){
 			ActivateTurbine( );
 		}
 	}
