@@ -1,9 +1,9 @@
+using Assets.Scripts.Navigation;
 using UnityEngine;
 using System.Collections;
-using Spine;
-using TouchScript;
 using TouchScript.Gestures;
 using System;
+using Polygon = Assets.Scripts.Navigation.Polygon;
 
 public class CharacterController : PressGesture {
 
@@ -19,17 +19,17 @@ public class CharacterController : PressGesture {
 	float runSpeed;
     NavigationMesh2D navMesh;
 
-	const float playerBodyWidth = 0.7f;
-	const float stopWithinRange = 0.01f;
-	const float monsterMoveSpeedMax = 1.0f;
-	const float monsterMoveSpeedMin = 1.5f;
+	const float PLAYER_BODY_WIDTH = 0.7f;
+	const float STOP_WITHIN_RANGE = 0.01f;
+	const float MONSTER_MOVE_SPEED_MAX = 1.0f;
+	const float MONSTER_MOVE_SPEED_MIN = 1.5f;
     const string NAVIGATION_MESH_TAG = "NavigationMesh";
 
     void Start( ) {
         navMesh = FindNavigationMesh( );
     }
 
-    NavigationMesh2D FindNavigationMesh( ) {
+    static NavigationMesh2D FindNavigationMesh( ) {
 
         GameObject[ ] navMeshLookup = GameObject.FindGameObjectsWithTag( NAVIGATION_MESH_TAG );
         ArrayList foundNavMeshes = new ArrayList( );
@@ -50,9 +50,10 @@ public class CharacterController : PressGesture {
         return foundNavMeshes[ 0 ] as NavigationMesh2D;
     }
 
-    NavigationMesh2D CreateDummyNavigationMesh( ) {
-        GameObject dummyNavigation = new GameObject( );
-        dummyNavigation.name = "DummyNavigationMesh";
+    static NavigationMesh2D CreateDummyNavigationMesh( ) {
+        GameObject dummyNavigation = new GameObject{
+            name = "DummyNavigationMesh"
+        };
         NavigationMesh2D navMesh = dummyNavigation.AddComponent<NavigationMesh2D>( );
         navMesh.tag = NAVIGATION_MESH_TAG;
         Polygon poly = navMesh.GetOrAddComponent<Polygon>( );
@@ -118,7 +119,7 @@ public class CharacterController : PressGesture {
 	}
 
 	public void MoveMonster( Vector3 worldCoordinates, CharacterAnimations.AnimationList animation ){
-		if( shouldChangeDirectionFacing( worldCoordinates.x ) ) {
+		if( this.ShouldChangeDirectionFacing( worldCoordinates.x ) ) {
 			ChangeDirectionFacing( );
 		}
 		monsterPosition = NewMonsterPosition( worldCoordinates );
@@ -134,7 +135,7 @@ public class CharacterController : PressGesture {
 		return Vector3.Distance( monster.transform.position, monsterPosition );
 	}
 
-	bool shouldChangeDirectionFacing( float positionMovingTowards ) {
+	bool ShouldChangeDirectionFacing( float positionMovingTowards ) {
 		return ( monster.transform.localScale.x > 0.0f &&
 		    monster.transform.position.x < positionMovingTowards ) ||
 			( monster.transform.localScale.x < 0.0f &&
@@ -159,27 +160,29 @@ public class CharacterController : PressGesture {
 	}
 
 	void StartMovementAnimation( CharacterAnimations.AnimationList monsterAnimation ) {
-		if ( travelDistance > playerBodyWidth && monsterAnimation != characterAnimations.runningAnimation ) {
+		if ( travelDistance > PLAYER_BODY_WIDTH && monsterAnimation != characterAnimations.runningAnimation ) {
 			characterAnimations.PlayNewAnimation( monsterAnimation, true );
 			SetMonsterMovementSpeed( monsterAnimation );
 			StartCoroutine( "DisplayMonsterMovement" );
 		}
 	}
 
-	void SetMonsterMovementSpeed( CharacterAnimations.AnimationList monsterAnimation ) {
-		if( monsterAnimation == CharacterAnimations.AnimationList.Walking ) {
-			runSpeed = monsterMoveSpeedMin;
-		}
-		else if( monsterAnimation == CharacterAnimations.AnimationList.Running ) {
-			runSpeed = monsterMoveSpeedMax;
-		}
+	void SetMonsterMovementSpeed( CharacterAnimations.AnimationList monsterAnimation ){
+	    switch( monsterAnimation ){
+	        case CharacterAnimations.AnimationList.Walking:
+	            this.runSpeed = MONSTER_MOVE_SPEED_MIN;
+	            break;
+	        case CharacterAnimations.AnimationList.Running:
+	            this.runSpeed = MONSTER_MOVE_SPEED_MAX;
+	            break;
+	    }
 	}
 
-	IEnumerator DisplayMonsterMovement( ){
-		for( float i = travelDistance; i > stopWithinRange; ) {
+    IEnumerator DisplayMonsterMovement( ){
+		for( float i = travelDistance; i > STOP_WITHIN_RANGE; ) {
 			float speed = ( ( runSpeed * Time.deltaTime ) / travelDistance );
 			travelDistance = Vector3.Distance( monster.transform.position, monsterPosition );
-			if( travelDistance <= stopWithinRange ) {
+			if( travelDistance <= STOP_WITHIN_RANGE ) {
 			    StopMovement( );
 			}
 			i = travelDistance;

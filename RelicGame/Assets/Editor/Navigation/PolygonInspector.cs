@@ -1,7 +1,8 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using Assets.Scripts.Navigation;
+using UnityEngine;
 using UnityEditor;
 
+[ExecuteInEditMode]
 [CustomEditor ( typeof ( Polygon ) )]
 public class PolygonInspector : Editor {
     
@@ -12,7 +13,7 @@ public class PolygonInspector : Editor {
         int numberOfCorners = EditorGUILayout.IntField( "Number Of Corners", polyCorners.Length );
 
         for( int num = 0; num < polyCorners.Length; num++ ) {
-            polyCorners[ num ] = EditorGUILayout.Vector2Field( "Corner " + num.ToString( ), polyCorners[ num ] );
+            polyCorners[ num ] = EditorGUILayout.Vector2Field( "Corner " + num, polyCorners[ num ] );
         }
         polygon.polygonCorners = polyCorners;
         CheckForResize( polygon, polyCorners, numberOfCorners );
@@ -34,7 +35,7 @@ public class PolygonInspector : Editor {
         SceneView.RepaintAll( );
     }
 
-    void DrawPoint( Vector3 point ) {
+    static void DrawPoint( Vector3 point ) {
         Handles.color = Color.yellow;
         Vector3 pointDrawTool = new Vector3( 0.0f, 0.05f, 0.0f );
         Vector3 pointDrawTool2 = new Vector3( 0.05f, 0.0f, 0.0f );

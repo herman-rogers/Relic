@@ -1,15 +1,15 @@
-﻿using UnityEngine;
-using System.Collections;
+﻿using System.Linq;
+using UnityEngine;
 
-public class NavigationMesh2D : MonoBehaviour {
+namespace Assets.Scripts.Navigation{
+
+    public class NavigationMesh2D : MonoBehaviour {
     
-    public bool CanMoveTo( Vector3 worldCoordinates ) {
-        foreach( Polygon poly in this.GetComponentsInChildren< Polygon >( ) ) {
-            if( poly.PointInPoly( new Vector2( worldCoordinates.x, worldCoordinates.y ) ) ) {
-                return true;
-            }
+        public bool CanMoveTo( Vector3 worldCoordinates ){
+            return this.GetComponentsInChildren< Polygon >( )
+                .Any( poly => poly.PointInPoly( new Vector2( worldCoordinates.x, worldCoordinates.y ) ) );
         }
-        return false;
+
     }
 
 }

@@ -81,6 +81,14 @@ public class SceneLoaderOnTouch : PressGesture {
 					new DoorInformation( "elevatorShaft(Underground)", SceneDoor.DOWN ),
 					new DoorInformation( "oldLabExit", SceneDoor.RIGHT ) 
 				}
+			},
+            { "Fishing", new DoorInformation[ ] {
+					new DoorInformation( "Cabin", SceneDoor.RIGHT )
+				}
+			},
+            { "Cabin", new DoorInformation[ ] {
+					new DoorInformation( "CampFire", SceneDoor.RIGHT ) 
+				}
 			}
 		};
 
