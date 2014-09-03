@@ -6,24 +6,24 @@ public class Polygon : MonoBehaviour {
     
     public Vector2[ ] polygonCorners;
 
-    void Update( ) { 
-        Vector2 previousCorner = Vector2.zero;
-        int j = 1;
-        for( int i = 0; i < polygonCorners.Length; i++, j++ ) {
-            if( j >= polygonCorners.Length ) {
-                j = 0;//TODO: Figure out better way of looping this.
-            }
-            DrawPoint( polygonCorners[ i ] );
-            Debug.DrawLine( polygonCorners[ i ], polygonCorners[ j ], Color.red );
-        }
-    }
+    //public void Update( ) {
+    //    int j = 1;
+    //    for( int i = 0; i < polygonCorners.Length; i++, j++ ) {
+    //        if( j >= polygonCorners.Length ) {
+    //            j = 0;//TODO: Figure out better way of looping this.
+    //        }
+    //        DrawPoint( polygonCorners[ i ] );
+    //        Debug.DrawLine( polygonCorners[ i ], polygonCorners[ j ], Color.red );
+    //    }
+    //}
 
-    void DrawPoint( Vector2 point ) {
-        Vector2 pointDrawTool = new Vector3( 0.0f, 0.05f );
-        Vector2 pointDrawTool2 = new Vector3( 0.05f, 0.0f );
-        Debug.DrawLine( point - pointDrawTool2, point + pointDrawTool2, Color.yellow );
-        Debug.DrawLine( point - pointDrawTool, point + pointDrawTool, Color.yellow );
-    }
+    //void DrawPoint( Vector2 point ) {
+    //    Vector2 pointDrawTool = new Vector3( 0.0f, 0.05f );
+    //    Vector2 pointDrawTool2 = new Vector3( 0.05f, 0.0f );
+    //    Debug.DrawLine( point - pointDrawTool2, point + pointDrawTool2, Color.yellow );
+    //    Debug.DrawLine( point - pointDrawTool, point + pointDrawTool, Color.yellow );
+    //}
+
 
     /// <summary>
     /// Uses Point-In-Polygon Algorithm to determin if a point is within this polygon shape.
