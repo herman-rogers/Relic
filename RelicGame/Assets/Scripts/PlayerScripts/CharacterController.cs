@@ -57,10 +57,10 @@ public class CharacterController : PressGesture {
         navMesh.tag = NAVIGATION_MESH_TAG;
         Polygon poly = navMesh.GetOrAddComponent<Polygon>( );
         poly.polygonCorners = new Vector2[ 4 ] {
-                new Vector2( -10.0f, 10.0f ),
-                new Vector2( 10.0f, 10.0f ),
-                new Vector2( 10.0f, -10.0f ),
-                new Vector2( -10.0f, -10.0f )
+                new Vector2( -1000.0f, 1000.0f ),
+                new Vector2( 1000.0f, 1000.0f ),
+                new Vector2( 1000.0f, -1000.0f ),
+                new Vector2( -1000.0f, -1000.0f )
             };
         return navMesh;
     } 
