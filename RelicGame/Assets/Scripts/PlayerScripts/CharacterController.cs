@@ -23,6 +23,7 @@ public class CharacterController : PressGesture {
 	const float stopWithinRange = 0.01f;
 	const float monsterMoveSpeedMax = 1.0f;
 	const float monsterMoveSpeedMin = 1.5f;
+    const string NAVIGATION_MESH_TAG = "NavigationMesh";
 
     void Start( ) {
         navMesh = FindNavigationMesh( );
@@ -30,7 +31,6 @@ public class CharacterController : PressGesture {
 
     NavigationMesh2D FindNavigationMesh( ) {
 
-        const string NAVIGATION_MESH_TAG = "NavigationMesh";
         GameObject[ ] navMeshLookup = GameObject.FindGameObjectsWithTag( NAVIGATION_MESH_TAG );
         ArrayList foundNavMeshes = new ArrayList( );
         foreach( GameObject go in navMeshLookup ) {
@@ -45,14 +45,25 @@ public class CharacterController : PressGesture {
         } else if( foundNavMeshes.Count == 0 ) {
             Debug.LogWarning( "No navigation meshes found. Creating dummy navigation mesh. \n" + 
                 "Check to see if the NavigationMesh is tagged as NavigationMesh." );
-            GameObject dummyNavigation = new GameObject( );
-            dummyNavigation.name = "DummyNavigationMesh";
-            NavigationMesh2D navMesh = dummyNavigation.AddComponent<NavigationMesh2D>( );
-            navMesh.tag = NAVIGATION_MESH_TAG;
-            foundNavMeshes.Add( navMesh );
+            foundNavMeshes.Add( CreateDummyNavigationMesh( ) );
         }
         return foundNavMeshes[ 0 ] as NavigationMesh2D;
     }
+
+    NavigationMesh2D CreateDummyNavigationMesh( ) {
+        GameObject dummyNavigation = new GameObject( );
+        dummyNavigation.name = "DummyNavigationMesh";
+        NavigationMesh2D navMesh = dummyNavigation.AddComponent<NavigationMesh2D>( );
+        navMesh.tag = NAVIGATION_MESH_TAG;
+        Polygon poly = navMesh.GetOrAddComponent<Polygon>( );
+        poly.polygonCorners = new Vector2[ 4 ] {
+                new Vector2( -10.0f, 10.0f ),
+                new Vector2( 10.0f, 10.0f ),
+                new Vector2( 10.0f, -10.0f ),
+                new Vector2( -10.0f, -10.0f )
+            };
+        return navMesh;
+    } 
 
 	void OnLevelWasLoaded( int level ) {
 		try {
