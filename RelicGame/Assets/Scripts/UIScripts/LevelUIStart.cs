@@ -9,7 +9,7 @@ public class LevelUIStart : UnityObserver
 	private const float fadeTime = 0.009f;
 
 	void Awake( ) {
-		CharacterController.togglePlayerInput = PlayerInput.STOP_PLAYER_INPUT;
+//		CharacterController.togglePlayerInput = PlayerInput.STOP_PLAYER_INPUT;
 		SetBackgroundToScreenSize( );
 		fadeBackground.alpha = 1.0f;
 		test.alpha = 0.0f;
@@ -27,6 +27,6 @@ public class LevelUIStart : UnityObserver
 			fadeBackground.alpha -= fadeTime;
 			yield return new WaitForSeconds( fadeTime );
 		}
-		CharacterController.togglePlayerInput = PlayerInput.START_PLAYER_INPUT;
+//		CharacterController.togglePlayerInput = PlayerInput.START_PLAYER_INPUT;
 	}
 }

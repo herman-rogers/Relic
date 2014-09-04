@@ -1,8 +1,6 @@
 using UnityEngine;
 using System.Collections;
 using TouchScript.Gestures;
-using TouchScript;
-using System.Collections.Generic;
 
 public class DoorTween : PressGesture {
 
