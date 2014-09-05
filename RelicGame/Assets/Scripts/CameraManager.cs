@@ -6,7 +6,7 @@ using TouchScript.Events;
 [ System.Serializable ]
 public class CameraManager : MonoBehaviour {
 
-	public GameObject monster;
+	public GameObject player;
 	[ Range( 0.1f, 5.0f ) ]
 	public float cameraMoveSpeedHorizontally = 0.5f;
 	[ Range( 0.1f, 5.0f ) ]
@@ -40,19 +40,19 @@ public class CameraManager : MonoBehaviour {
 	}
 
 	public void Update( ) {
-		if( !isMoving && ( this.camera.WorldToScreenPoint( monster.transform.position ) ).x < 250.0f || 
-		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) < 250.0f ) {
+		if( !isMoving && ( this.camera.WorldToScreenPoint( player.transform.position ) ).x < 250.0f || 
+		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( player.transform.position ).x ) < 250.0f ) {
 			isMoving = true;
 		}
 		else if( isMoving ) {
-			isMoving = !( ( this.camera.WorldToScreenPoint(monster.transform.position ) ).x > 300.0f && 
-			             ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( monster.transform.position ).x ) > 300.0f );
+			isMoving = !( ( this.camera.WorldToScreenPoint(player.transform.position ) ).x > 300.0f && 
+			             ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( player.transform.position ).x ) > 300.0f );
 		}
 		LerpCamera( );
 	}
 
 	void LerpCamera( ) {
-		Vector3 monsterPosition = monster.transform.position;
+		Vector3 monsterPosition = player.transform.position;
 		if( shouldCheckForAnchors ) {
 			bool canMoveHorizontally = ( monsterPosition.x > this.transform.position.x ) ? CanMoveRight( ) : CanMoveLeft( );
 			bool canMoveVertically = ( monsterPosition.y > this.transform.position.y ) ? CanMoveUp( ) : CanMoveDown( );

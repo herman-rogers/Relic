@@ -7,8 +7,8 @@ public class TurbineSceneGlimpse : UnityObserver {
 	public Camera sceneCamera;
 	static bool firstInteraction = true;
 
-	public override void OnNotify ( object sender, EventArguments e ) {
-		if( e.EventMessage == TurbineSceneEventListener.AltarObjectEvent && !firstInteraction ) {
+	public override void OnNotify ( Object sender, EventArguments e ) {
+		if( e.eventMessage == TurbineSceneEventListener.AltarObjectEvent && !firstInteraction ) {
 			StartCoroutine( ShowTurbineScene( ) );
 		}
 		firstInteraction = false;

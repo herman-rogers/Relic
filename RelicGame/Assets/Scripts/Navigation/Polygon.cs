@@ -2,7 +2,6 @@
 
 namespace Assets.Scripts.Navigation{
 
-    [ExecuteInEditMode]
     public class Polygon : MonoBehaviour {
     
         public Vector2[ ] polygonCorners;
