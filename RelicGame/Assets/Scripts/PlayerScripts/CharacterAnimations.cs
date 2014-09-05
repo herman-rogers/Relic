@@ -17,7 +17,7 @@ public class CharacterAnimations {
 		this.sceneCharacter = characterObject.transform.parent.gameObject;
 		this.spineAnimation = sceneCharacter.GetComponent< SkeletonAnimation >( );
 		this.runningAnimation = AnimationList.Idle;
-		this.spineAnimation.state.Complete += AnimationComplete;
+        this.spineAnimation.state.Complete += AnimationComplete;
 	}
 
 	public void PlayNewAnimation( AnimationList animation ){
