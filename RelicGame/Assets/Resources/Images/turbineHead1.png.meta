@@ -1,6 +1,8 @@
 fileFormatVersion: 2
 guid: b0c1ebc11b8184b78916bf805f763b8a
 TextureImporter:
+  fileIDToRecycleName:
+    21300000: turbineHead1_0
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -35,6 +37,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: .5, y: 0}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spritePixelsToUnits: 100
   alphaIsTransparency: 1
   textureType: 8
@@ -50,5 +53,6 @@ TextureImporter:
         height: 282
       alignment: 9
       pivot: {x: .505157232, y: .261267215}
+      border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 

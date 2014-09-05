@@ -1015,7 +1015,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fbc7ef0c615ccc4292b4f46d4634ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
+  player: {fileID: 393853231}
   cameraMoveSpeedHorizontally: 2
   cameraMoveSpeedVertically: 2
   topLeftAnchor: {fileID: 554243298}
