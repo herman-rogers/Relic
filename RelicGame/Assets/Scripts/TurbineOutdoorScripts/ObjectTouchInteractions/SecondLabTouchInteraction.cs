@@ -5,6 +5,6 @@ using TouchScript.Gestures;
 public class SecondLabTouchInteraction : ObjectTouchInteraction {
 
 	protected override void GestureStateRecognized( ){
-		Subject.Notify( this, TurbineSceneEventListener.SecondLabEvent );
+		Subject.NotifySendAll( this, TurbineSceneEventListener.SecondLabEvent, "No Message" );
 	}
 }

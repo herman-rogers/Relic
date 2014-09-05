@@ -4,6 +4,6 @@ using System.Collections;
 public class TurbineRoomTouchInteraction : ObjectTouchInteraction {
 
 	protected override void GestureStateRecognized ( ) {
-		Subject.Notify( this, TurbineSceneEventListener.TurbineRoomEventOne );
+		Subject.NotifySendAll( this, TurbineSceneEventListener.TurbineRoomEventOne, "No Message" );
 	}
 }
