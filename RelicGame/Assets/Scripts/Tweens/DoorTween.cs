@@ -6,12 +6,9 @@ public class DoorTween : PressGesture {
 
 	public SpriteRenderer renderer;
 	public FlickerTween computer;//TODO: make this non coupled with FlickerTween.
-	public Transform player;//TODO: also decouple the player from the door.
-	CharacterController controller;
 
 	void Start( ) {
 		base.Start( );
-		controller = player.GetComponentInChildren< CharacterController >( );
 		StateChanged += StateChangeHandler;
 	}
 
@@ -33,8 +30,7 @@ public class DoorTween : PressGesture {
 
 	bool DoorCanOpen( ) {
 		return (
-			computer.frequency.Evaluate( Time.timeSinceLevelLoad / computer.rateOfFlicker ) > 0.9f
-			&& Mathf.Abs( this.transform.position.x - player.position.x ) < 2.2f );
+			computer.frequency.Evaluate( Time.timeSinceLevelLoad / computer.rateOfFlicker ) > 0.7f );
 	}
 
 	IEnumerator WaitForAnimation( ) {

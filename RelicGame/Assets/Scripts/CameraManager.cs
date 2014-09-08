@@ -1,12 +1,8 @@
 ﻿using UnityEngine;
-using System.Collections;
-using TouchScript;
-using TouchScript.Events;
 
 [ System.Serializable ]
 public class CameraManager : MonoBehaviour {
 
-	public GameObject player;
 	[ Range( 0.1f, 5.0f ) ]
 	public float cameraMoveSpeedHorizontally = 0.5f;
 	[ Range( 0.1f, 5.0f ) ]
@@ -18,41 +14,49 @@ public class CameraManager : MonoBehaviour {
 	public Transform botRightAnchor;
 
 	bool shouldCheckForAnchors;
-	public float cameraHalfWidth {
+
+    private GameObject _player;
+    GameObject Player{
+        get{
+            return _player ?? ( CharacterController.GetCharacterController( ) );
+        }
+    }
+
+	public float CameraHalfWidth {
 		get {
 			return ( camera.orthographicSize * camera.aspect );
 		}
 	}
 
-	public float cameraHalfHeight {
+	public float CameraHalfHeight {
 		get {
 			return ( camera.orthographicSize );
 		}
 	}
 
-	private void Awake( ) {
+	private void Awake( ){
 		shouldCheckForAnchors = HasAnchors( );
 	}
 
-	bool HasAnchors( ) {
+    bool HasAnchors( ) {
 		return ( topLeftAnchor != null && botRightAnchor != null && 
 		        ( topLeftAnchor != null && botRightAnchor != null ) );
 	}
 
 	public void Update( ) {
-		if( !isMoving && ( this.camera.WorldToScreenPoint( player.transform.position ) ).x < 250.0f || 
-		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( player.transform.position ).x ) < 250.0f ) {
+		if( !isMoving && ( this.camera.WorldToScreenPoint( this.Player.transform.position ) ).x < 250.0f || 
+		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( this.Player.transform.position ).x ) < 250.0f ) {
 			isMoving = true;
 		}
 		else if( isMoving ) {
-			isMoving = !( ( this.camera.WorldToScreenPoint(player.transform.position ) ).x > 300.0f && 
-			             ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( player.transform.position ).x ) > 300.0f );
+			isMoving = !( ( this.camera.WorldToScreenPoint(this.Player.transform.position ) ).x > 300.0f && 
+			             ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( this.Player.transform.position ).x ) > 300.0f );
 		}
 		LerpCamera( );
 	}
 
 	void LerpCamera( ) {
-		Vector3 monsterPosition = player.transform.position;
+		Vector3 monsterPosition = this.Player.transform.position;
 		if( shouldCheckForAnchors ) {
 			bool canMoveHorizontally = ( monsterPosition.x > this.transform.position.x ) ? CanMoveRight( ) : CanMoveLeft( );
 			bool canMoveVertically = ( monsterPosition.y > this.transform.position.y ) ? CanMoveUp( ) : CanMoveDown( );
@@ -67,18 +71,18 @@ public class CameraManager : MonoBehaviour {
 	}
 
 	bool CanMoveLeft( ) {
-		return ( this.transform.position.x - cameraHalfWidth > topLeftAnchor.position.x );
+		return ( this.transform.position.x - this.CameraHalfWidth > topLeftAnchor.position.x );
 	}
 	
 	bool CanMoveRight( ) {
-		return ( this.transform.position.x + cameraHalfWidth < botRightAnchor.position.x );
+		return ( this.transform.position.x + this.CameraHalfWidth < botRightAnchor.position.x );
 	}
 
 	bool CanMoveUp( ) {
-		return ( this.transform.position.y + cameraHalfWidth < topLeftAnchor.position.y );
+		return ( this.transform.position.y + this.CameraHalfWidth < topLeftAnchor.position.y );
 	}
 	bool CanMoveDown( ) {
-		return ( this.transform.position.y - cameraHalfWidth > botRightAnchor.position.y );
+		return ( this.transform.position.y - this.CameraHalfWidth > botRightAnchor.position.y );
 	}
 
 }

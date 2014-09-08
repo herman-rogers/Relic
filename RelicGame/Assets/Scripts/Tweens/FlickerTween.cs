@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FlickerTween {
+public class FlickerTween : MonoBehaviour {
 
 	public SpriteRenderer flickerSprite;
 

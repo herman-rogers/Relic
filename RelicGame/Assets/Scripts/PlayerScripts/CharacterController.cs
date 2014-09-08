@@ -12,6 +12,7 @@ public class CharacterController : PressGesture {
 	public Transform leftExit;
 	public Transform upExit;
 	public Transform downExit;
+    public const string PLAYER_TAG = "PlayerTag";
 
 	CharacterAnimations characterAnimations;
 	Vector3 monsterPosition;
@@ -25,8 +26,13 @@ public class CharacterController : PressGesture {
 	const float MONSTER_MOVE_SPEED_MIN = 1.5f;
     const string NAVIGATION_MESH_TAG = "NavigationMesh";
 
-    void Start( ) {
+    void Start( ){
+        this.tag = PLAYER_TAG;
         navMesh = FindNavigationMesh( );
+    }
+    
+    public static GameObject GetCharacterController( ) {
+        return GameObject.FindGameObjectWithTag( PLAYER_TAG );
     }
 
     static NavigationMesh2D FindNavigationMesh( ) {
@@ -40,7 +46,7 @@ public class CharacterController : PressGesture {
             }
         }
         if( foundNavMeshes.Count > 1 ) {
-            Debug.LogError( "Found multiple navigation meshes! \n" +
+            Debug.LogWarning( "Found multiple navigation meshes! \n" +
                             "There should only be one navigation mesh per scene." );
         } else if( foundNavMeshes.Count == 0 ) {
             Debug.LogWarning( "No navigation meshes found. Creating dummy navigation mesh. \n" + 

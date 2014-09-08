@@ -116,7 +116,7 @@ public class SceneLoaderOnTouch : PressGesture {
 
 		public class DoorInformation {
 			public string destinationSceneName;
-			public SceneDoor sideOfSceneToLoadOn;
+			public SceneLoadInfomation.SceneDoor sideOfSceneToLoadOn;
 
 			public DoorInformation( string sceneToLoad, SceneDoor sideToEnterFrom ) {
 				this.destinationSceneName = sceneToLoad;
