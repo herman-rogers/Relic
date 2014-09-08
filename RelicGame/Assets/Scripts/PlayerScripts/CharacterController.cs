@@ -12,7 +12,6 @@ public class CharacterController : PressGesture {
 	public Transform leftExit;
 	public Transform upExit;
 	public Transform downExit;
-    public const string PLAYER_TAG = "PlayerTag";
 
 	CharacterAnimations characterAnimations;
 	Vector3 monsterPosition;
@@ -27,12 +26,7 @@ public class CharacterController : PressGesture {
     const string NAVIGATION_MESH_TAG = "NavigationMesh";
 
     void Start( ){
-        this.tag = PLAYER_TAG;
         navMesh = FindNavigationMesh( );
-    }
-    
-    public static GameObject GetCharacterController( ) {
-        return GameObject.FindGameObjectWithTag( PLAYER_TAG );
     }
 
     static NavigationMesh2D FindNavigationMesh( ) {

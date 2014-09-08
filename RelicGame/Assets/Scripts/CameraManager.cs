@@ -15,12 +15,7 @@ public class CameraManager : MonoBehaviour {
 
 	bool shouldCheckForAnchors;
 
-    private GameObject _player;
-    GameObject Player{
-        get{
-            return _player ?? ( CharacterController.GetCharacterController( ) );
-        }
-    }
+    private ComponentContainer< CharacterController > player = new ComponentContainer<CharacterController>( );
 
 	public float CameraHalfWidth {
 		get {
@@ -44,19 +39,19 @@ public class CameraManager : MonoBehaviour {
 	}
 
 	public void Update( ) {
-		if( !isMoving && ( this.camera.WorldToScreenPoint( this.Player.transform.position ) ).x < 250.0f || 
-		   !isMoving && ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( this.Player.transform.position ).x ) < 250.0f ) {
+        if( !isMoving && ( this.camera.WorldToScreenPoint( this.player.stashedObject.transform.position ) ).x < 250.0f ||
+           !isMoving && ( ( ( float )Screen.width ) - this.camera.WorldToScreenPoint( this.player.stashedObject.transform.position ).x ) < 250.0f ) {
 			isMoving = true;
 		}
 		else if( isMoving ) {
-			isMoving = !( ( this.camera.WorldToScreenPoint(this.Player.transform.position ) ).x > 300.0f && 
-			             ( ( (float)Screen.width ) - this.camera.WorldToScreenPoint( this.Player.transform.position ).x ) > 300.0f );
+            isMoving = !( ( this.camera.WorldToScreenPoint( this.player.stashedObject.transform.position ) ).x > 300.0f &&
+                         ( ( ( float )Screen.width ) - this.camera.WorldToScreenPoint( this.player.stashedObject.transform.position ).x ) > 300.0f );
 		}
 		LerpCamera( );
 	}
 
 	void LerpCamera( ) {
-		Vector3 monsterPosition = this.Player.transform.position;
+        Vector3 monsterPosition = this.player.stashedObject.transform.position;
 		if( shouldCheckForAnchors ) {
 			bool canMoveHorizontally = ( monsterPosition.x > this.transform.position.x ) ? CanMoveRight( ) : CanMoveLeft( );
 			bool canMoveVertically = ( monsterPosition.y > this.transform.position.y ) ? CanMoveUp( ) : CanMoveDown( );
